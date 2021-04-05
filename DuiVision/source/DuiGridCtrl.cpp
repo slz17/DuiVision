@@ -2,16 +2,16 @@
 #include "DuiListCtrl.h"
 #include <algorithm>
 
-#define	SCROLL_V	1	// ´¹Ö±¹ö¶¯Ìõ¿Ø¼şID
-#define	SCROLL_H	2	// Ë®Æ½¹ö¶¯Ìõ¿Ø¼şID
-//#define	LISTBK_AREA	3	// ±³¾°Area¿Ø¼şID
+#define	SCROLL_V	1	// å‚ç›´æ»šåŠ¨æ¡æ§ä»¶ID
+#define	SCROLL_H	2	// æ°´å¹³æ»šåŠ¨æ¡æ§ä»¶ID
+//#define	LISTBK_AREA	3	// èƒŒæ™¯Areaæ§ä»¶ID
 
 CDuiGridCtrl::CDuiGridCtrl(HWND hWnd, CDuiObject* pDuiObject)
 			: CDuiPanel(hWnd, pDuiObject)
 {
 	m_strFontTitle = DuiSystem::GetDefaultFont();
 	m_nFontTitleWidth = 12;
-	// °´ÕÕµ±Ç°DPI¼ÆËã×ÖÌåµÄÏÔÊ¾´óĞ¡
+	// æŒ‰ç…§å½“å‰DPIè®¡ç®—å­—ä½“çš„æ˜¾ç¤ºå¤§å°
 	CDuiWinDwmWrapper::AdapterDpi(m_nFontTitleWidth);
 	m_fontTitleStyle = FontStyleRegular;
 	m_uAlignmentHeader = Align_Center;
@@ -23,8 +23,8 @@ CDuiGridCtrl::CDuiGridCtrl(HWND hWnd, CDuiObject* pDuiObject)
 	m_clrTextDown = Color(0, 112, 235);
 	m_clrTitle = Color(255, 32, 32, 32);
 	m_clrSeperator = Color(0, 0, 0, 0);
-	m_clrRowHover = Color(0, 128, 128, 128);	// Êó±êÒÆ¶¯µ½ĞĞÏÔÊ¾µÄ±³¾°É«,Ä¬ÈÏÊÇÍ¸Ã÷É«
-	m_clrRowCurrent = Color(0, 128, 128, 128);	// µ±Ç°ĞĞÏÔÊ¾µÄ±³¾°É«,Ä¬ÈÏÊÇÍ¸Ã÷É«
+	m_clrRowHover = Color(0, 128, 128, 128);	// é¼ æ ‡ç§»åŠ¨åˆ°è¡Œæ˜¾ç¤ºçš„èƒŒæ™¯è‰²,é»˜è®¤æ˜¯é€æ˜è‰²
+	m_clrRowCurrent = Color(0, 128, 128, 128);	// å½“å‰è¡Œæ˜¾ç¤ºçš„èƒŒæ™¯è‰²,é»˜è®¤æ˜¯é€æ˜è‰²
 	m_nRowHeight = 50;
 	m_nHeaderHeight = 0;
 	m_nLeftPos = 0;
@@ -106,14 +106,14 @@ CDuiGridCtrl::~CDuiGridCtrl(void)
 	}
 }
 
-// Í¼Æ¬ÊôĞÔµÄÊµÏÖ
+// å›¾ç‰‡å±æ€§çš„å®ç°
 DUI_IMAGE_ATTRIBUTE_IMPLEMENT(CDuiGridCtrl, Header, 1)
 DUI_IMAGE_ATTRIBUTE_IMPLEMENT(CDuiGridCtrl, HeaderSort, 8)
 DUI_IMAGE_ATTRIBUTE_IMPLEMENT(CDuiGridCtrl, ColumnSeperator, 1)
 DUI_IMAGE_ATTRIBUTE_IMPLEMENT(CDuiGridCtrl, Seperator, 1)
 DUI_IMAGE_ATTRIBUTE_IMPLEMENT(CDuiGridCtrl, CheckBox, 6)
 
-// ¼ÓÔØXML½Úµã£¬½âÎö½ÚµãÖĞµÄÊôĞÔĞÅÏ¢ÉèÖÃµ½µ±Ç°¿Ø¼şµÄÊôĞÔÖĞ
+// åŠ è½½XMLèŠ‚ç‚¹ï¼Œè§£æèŠ‚ç‚¹ä¸­çš„å±æ€§ä¿¡æ¯è®¾ç½®åˆ°å½“å‰æ§ä»¶çš„å±æ€§ä¸­
 BOOL CDuiGridCtrl::Load(DuiXmlNode pXmlElem, BOOL bLoadSubControl)
 {
 	if(!__super::Load(pXmlElem))
@@ -121,13 +121,13 @@ BOOL CDuiGridCtrl::Load(DuiXmlNode pXmlElem, BOOL bLoadSubControl)
 		return FALSE;
 	}
 
-    // Ê¹ÓÃXML½Úµã³õÊ¼»¯div¿Ø¼ş
+    // ä½¿ç”¨XMLèŠ‚ç‚¹åˆå§‹åŒ–divæ§ä»¶
 	if(pXmlElem != NULL)
 	{
 		InitUI(m_rc, pXmlElem);
 	}
 
-	// ¼ÓÔØÏÂ²ãµÄcloumn½ÚµãĞÅÏ¢
+	// åŠ è½½ä¸‹å±‚çš„cloumnèŠ‚ç‚¹ä¿¡æ¯
 	for (DuiXmlNode pColumnElem = pXmlElem.child(_T("column")); pColumnElem; pColumnElem=pColumnElem.next_sibling(_T("column")))
 	{
 		CString strTitle = pColumnElem.attribute(_T("title")).value();
@@ -175,7 +175,7 @@ BOOL CDuiGridCtrl::Load(DuiXmlNode pXmlElem, BOOL bLoadSubControl)
 		InsertColumn(-1, strTitle, nWidth, clrText, uAlignment, uVAlignment);
 	}
 
-	// ¼ÓÔØÏÂ²ãµÄrow½ÚµãĞÅÏ¢
+	// åŠ è½½ä¸‹å±‚çš„rowèŠ‚ç‚¹ä¿¡æ¯
 	for (DuiXmlNode pRowElem = pXmlElem.child(_T("row")); pRowElem; pRowElem=pRowElem.next_sibling(_T("row")))
 	{
 		CString strId = pRowElem.attribute(_T("id")).value();
@@ -191,7 +191,7 @@ BOOL CDuiGridCtrl::Load(DuiXmlNode pXmlElem, BOOL bLoadSubControl)
 			nCheck = _ttoi(strCheck);
 		}
 
-		// ×ó±ßÍ¼Æ¬,Í¨¹ıSkin¶ÁÈ¡
+		// å·¦è¾¹å›¾ç‰‡,é€šè¿‡Skinè¯»å–
 		CString strSkin = _T("");
 		if(strImage.Find(_T("skin:")) == 0)
 		{
@@ -205,16 +205,16 @@ BOOL CDuiGridCtrl::Load(DuiXmlNode pXmlElem, BOOL bLoadSubControl)
 		strImage = _T("");
 		if(strSkin.Find(_T(".")) != -1)
 		{
-			// Í¼Æ¬ÎÄ¼ş
-			strImage = strSkin;
+			// å›¾ç‰‡æ–‡ä»¶
+			strImage = strSkin;cli
 		}else
 		if(!strSkin.IsEmpty())
 		{
-			// Í¼Æ¬Ë÷Òı
+			// å›¾ç‰‡ç´¢å¼•
 			nImageIndex = _ttoi(strSkin);
 		}
 
-		// ÓÒ±ßÍ¼Æ¬,Í¨¹ıSkin¶ÁÈ¡
+		// å³è¾¹å›¾ç‰‡,é€šè¿‡Skinè¯»å–
 		CString strRightSkin = _T("");
 		if(strRightImage.Find(_T("skin:")) == 0)
 		{
@@ -228,12 +228,12 @@ BOOL CDuiGridCtrl::Load(DuiXmlNode pXmlElem, BOOL bLoadSubControl)
 		strRightImage = _T("");
 		if(strRightSkin.Find(_T(".")) != -1)
 		{
-			// Í¼Æ¬ÎÄ¼ş
+			// å›¾ç‰‡æ–‡ä»¶
 			strRightImage = strRightSkin;
 		}else
 		if(!strRightSkin.IsEmpty())
 		{
-			// Í¼Æ¬Ë÷Òı
+			// å›¾ç‰‡ç´¢å¼•
 			nRightImageIndex = _ttoi(strRightSkin);
 		}
 
@@ -244,7 +244,7 @@ BOOL CDuiGridCtrl::Load(DuiXmlNode pXmlElem, BOOL bLoadSubControl)
 
 		int nRowIndex = m_vecRowInfo.size()-1;
 		int nItemIndex = 0;
-		// ¼ÓÔØÏÂ²ãµÄitem½ÚµãĞÅÏ¢
+		// åŠ è½½ä¸‹å±‚çš„itemèŠ‚ç‚¹ä¿¡æ¯
 		for (DuiXmlNode pItemElem = pRowElem.child(_T("item")); pItemElem; pItemElem=pItemElem.next_sibling(_T("item")))
 		{
 			CString strTitle = pItemElem.attribute(_T("title")).value();
@@ -260,7 +260,7 @@ BOOL CDuiGridCtrl::Load(DuiXmlNode pXmlElem, BOOL bLoadSubControl)
 			DuiSystem::Instance()->ParseDuiString(strLinkAction);
 			Color clrText = CDuiObject::StringToColor(strClrText);
 
-			// Í¼Æ¬,Í¨¹ıSkin¶ÁÈ¡
+			// å›¾ç‰‡,é€šè¿‡Skinè¯»å–
 			CString strSkin = _T("");
 			if(strImage.Find(_T("skin:")) == 0)
 			{
@@ -274,12 +274,12 @@ BOOL CDuiGridCtrl::Load(DuiXmlNode pXmlElem, BOOL bLoadSubControl)
 			strImage = _T("");
 			if(strSkin.Find(_T(".")) != -1)
 			{
-				// Í¼Æ¬ÎÄ¼ş
+				// å›¾ç‰‡æ–‡ä»¶
 				strImage = strSkin;
 			}else
 			if(!strSkin.IsEmpty())
 			{
-				// Í¼Æ¬Ë÷Òı
+				// å›¾ç‰‡ç´¢å¼•
 				nImageIndex = _ttoi(strSkin);
 			}
 
@@ -293,7 +293,7 @@ BOOL CDuiGridCtrl::Load(DuiXmlNode pXmlElem, BOOL bLoadSubControl)
 				SetSubItem(nRowIndex, nItemIndex, strTitle, strContent, bUseTitleFont, nImageIndex, clrText, strImage);
 			}
 
-			// ¼ÓÔØÏÂ²ãµÄ¿Ø¼ş½ÚµãĞÅÏ¢
+			// åŠ è½½ä¸‹å±‚çš„æ§ä»¶èŠ‚ç‚¹ä¿¡æ¯
 			GridItemInfo* pItemInfo = GetItemInfo(nRowIndex, nItemIndex);
 			for (DuiXmlNode pControlElem = pItemElem.first_child(); pControlElem; pControlElem=pControlElem.next_sibling())
 			{
@@ -305,9 +305,9 @@ BOOL CDuiGridCtrl::Load(DuiXmlNode pXmlElem, BOOL bLoadSubControl)
 					{
 						pControl->Load(pControlElem);
 						pControl->SetVisible(FALSE);
-						// ½«¿Ø¼şÖ¸ÕëÌí¼Óµ½gridctrl¿Ø¼şµÄ×Ó¿Ø¼şÁĞ±íÖĞ
+						// å°†æ§ä»¶æŒ‡é’ˆæ·»åŠ åˆ°gridctrlæ§ä»¶çš„å­æ§ä»¶åˆ—è¡¨ä¸­
 						m_vecControl.push_back(pControl);
-						// ½«¿Ø¼şÖ¸ÕëÌí¼Óµ½µ¥Ôª¸ñµÄ¿Ø¼şÁĞ±íÖĞ(½öÓÃÓÚ°´ÕÕµ¥Ôª¸ñ²éÕÒ×Ó¿Ø¼ş)
+						// å°†æ§ä»¶æŒ‡é’ˆæ·»åŠ åˆ°å•å…ƒæ ¼çš„æ§ä»¶åˆ—è¡¨ä¸­(ä»…ç”¨äºæŒ‰ç…§å•å…ƒæ ¼æŸ¥æ‰¾å­æ§ä»¶)
 						pItemInfo->vecControl.push_back(pControl);
 					}
 				}
@@ -317,15 +317,15 @@ BOOL CDuiGridCtrl::Load(DuiXmlNode pXmlElem, BOOL bLoadSubControl)
 		}
 	}
 
-	// ¼ÆËãºáÏò¹ö¶¯Ìõ
+	// è®¡ç®—æ¨ªå‘æ»šåŠ¨æ¡
 	CalcColumnsPos();
-	// ¼ÆËãÃ¿Ò»ĞĞµÄÎ»ÖÃºÍ¹ö¶¯Ìõ
+	// è®¡ç®—æ¯ä¸€è¡Œçš„ä½ç½®å’Œæ»šåŠ¨æ¡
 	CalcRowsPos();
 
     return TRUE;
 }
 
-// Ìí¼ÓÁĞ
+// æ·»åŠ åˆ—
 BOOL CDuiGridCtrl::InsertColumn(int nColumn, CString strTitle, int nWidth, Color clrText, UINT uAlignment, UINT uVAlignment)
 {
 	GridColumnInfo columnInfo;
@@ -350,26 +350,26 @@ BOOL CDuiGridCtrl::InsertColumn(int nColumn, CString strTitle, int nWidth, Color
 	{
 		GridColumnInfo &columnInfoTemp = m_vecColumnInfo.at(i);
 		int nWidth = columnInfoTemp.nWidth;
-		if(nWidth == -1)	// -1±íÊ¾×îºóÒ»ÁĞÎª×ÔÊÊÓ¦¿í¶È
+		if(nWidth == -1)	// -1è¡¨ç¤ºæœ€åä¸€åˆ—ä¸ºè‡ªé€‚åº”å®½åº¦
 		{
 			nWidth = m_rc.Width() - nXPos;
 			if(nWidth < 0)
 			{
-				nWidth = DUI_DPI_X(100);	// Èç¹û¿í¶È²»¹»,ÉèÖÃÒ»¸ö×îĞ¡Öµ
+				nWidth = DUI_DPI_X(100);	// å¦‚æœå®½åº¦ä¸å¤Ÿ,è®¾ç½®ä¸€ä¸ªæœ€å°å€¼
 			}
 		}
 		columnInfoTemp.rcHeader.SetRect(nXPos, nYPos, nXPos + nWidth, nYPos + m_nRowHeight);
 		nXPos += columnInfoTemp.nWidth;
 	}
 
-	// ¼ÆËãºáÏò¹ö¶¯Ìõ
+	// è®¡ç®—æ¨ªå‘æ»šåŠ¨æ¡
 	CalcColumnsPos();
 
 	UpdateControl(true);
 	return true;
 }
 
-// ÉèÖÃÁĞ¿í¶È
+// è®¾ç½®åˆ—å®½åº¦
 int CDuiGridCtrl::SetColumnWidth(int nColumn, int nWidth, int nWidthNextColumn)
 {
 	int nXPos = 0;
@@ -388,12 +388,12 @@ int CDuiGridCtrl::SetColumnWidth(int nColumn, int nWidth, int nWidthNextColumn)
 			columnInfoTemp.nWidth = nWidthNextColumn;
 		}
 		int _nWidth = columnInfoTemp.nWidth;
-		if(_nWidth == -1)	// -1±íÊ¾×îºóÒ»ÁĞÎª×ÔÊÊÓ¦¿í¶È
+		if(_nWidth == -1)	// -1è¡¨ç¤ºæœ€åä¸€åˆ—ä¸ºè‡ªé€‚åº”å®½åº¦
 		{
 			_nWidth = m_rc.Width() - nXPos;
 			if(_nWidth < 0)
 			{
-				_nWidth = 100;	// Èç¹û¿í¶È²»¹»,ÉèÖÃÒ»¸ö×îĞ¡Öµ
+				_nWidth = 100;	// å¦‚æœå®½åº¦ä¸å¤Ÿ,è®¾ç½®ä¸€ä¸ªæœ€å°å€¼
 			}
 		}
 		if(i == nColumn)
@@ -404,9 +404,9 @@ int CDuiGridCtrl::SetColumnWidth(int nColumn, int nWidth, int nWidthNextColumn)
 		nXPos += columnInfoTemp.nWidth;
 	}
 
-	// ¼ÆËãºáÏò¹ö¶¯Ìõ
+	// è®¡ç®—æ¨ªå‘æ»šåŠ¨æ¡
 	CalcColumnsPos();
-	// ÖØĞÂ¼ÆËãËùÓĞĞĞµÄÎ»ÖÃ
+	// é‡æ–°è®¡ç®—æ‰€æœ‰è¡Œçš„ä½ç½®
 	CalcRowsPos();
 
 	UpdateControl(true);
@@ -423,19 +423,19 @@ int CDuiGridCtrl::GetColumnWidth(UINT nColumn)
 		return m_vecColumnInfo.at(nColumn).nWidth;
 }
 
-// ÒÆ¶¯ÁĞ·Ö¸ôÏßÎ»ÖÃ
+// ç§»åŠ¨åˆ—åˆ†éš”çº¿ä½ç½®
 void CDuiGridCtrl::MoveColumnSplit(int nColumn, int nPos)
 {
 	if((size_t)nColumn < m_vecColumnInfo.size())
 	{
 		GridColumnInfo &columnInfo1 = m_vecColumnInfo.at(nColumn);
 		int nWidth1 = columnInfo1.nWidth;
-		if(nWidth1 == -1)	// -1±íÊ¾×îºóÒ»ÁĞÎª×ÔÊÊÓ¦¿í¶È
+		if(nWidth1 == -1)	// -1è¡¨ç¤ºæœ€åä¸€åˆ—ä¸ºè‡ªé€‚åº”å®½åº¦
 		{
 			nWidth1 = m_rc.Width() - columnInfo1.rcHeader.right;
 			if(nWidth1 < 0)
 			{
-				nWidth1 = 100;	// Èç¹û¿í¶È²»¹»,ÉèÖÃÒ»¸ö×îĞ¡Öµ
+				nWidth1 = 100;	// å¦‚æœå®½åº¦ä¸å¤Ÿ,è®¾ç½®ä¸€ä¸ªæœ€å°å€¼
 			}
 		}
 		nWidth1 += (nPos - columnInfo1.rcHeader.right);
@@ -452,12 +452,12 @@ void CDuiGridCtrl::MoveColumnSplit(int nColumn, int nPos)
 			return;
 		}
 
-		// µ÷ÕûÁĞ¿í,½öµ÷ÕûÇ°ÃæµÄÁĞ¿í¶È,ºóÃæµÄ²»±ä
+		// è°ƒæ•´åˆ—å®½,ä»…è°ƒæ•´å‰é¢çš„åˆ—å®½åº¦,åé¢çš„ä¸å˜
 		SetColumnWidth(nColumn, nWidth1, nWidth2);
 	}
 }
 
-// »ñÈ¡×ÜµÄÁĞ¿í
+// è·å–æ€»çš„åˆ—å®½
 int CDuiGridCtrl::GetTotalColumnWidth()
 {
 	int nTotalWidth = 0;
@@ -466,12 +466,12 @@ int CDuiGridCtrl::GetTotalColumnWidth()
 	{
 		GridColumnInfo &columnInfoTemp = m_vecColumnInfo.at(i);
 		int nWidth = columnInfoTemp.nWidth;
-		if(nWidth == -1)	// -1±íÊ¾×îºóÒ»ÁĞÎª×ÔÊÊÓ¦¿í¶È
+		if(nWidth == -1)	// -1è¡¨ç¤ºæœ€åä¸€åˆ—ä¸ºè‡ªé€‚åº”å®½åº¦
 		{
 			nWidth = m_rc.Width() - nTotalWidth;
 			if(nWidth < 0)
 			{
-				nWidth = 100;	// Èç¹û¿í¶È²»¹»,ÉèÖÃÒ»¸ö×îĞ¡Öµ
+				nWidth = 100;	// å¦‚æœå®½åº¦ä¸å¤Ÿ,è®¾ç½®ä¸€ä¸ªæœ€å°å€¼
 			}
 		}
 		nTotalWidth += nWidth;
@@ -480,7 +480,7 @@ int CDuiGridCtrl::GetTotalColumnWidth()
 	return nTotalWidth;
 }
 
-// Ìí¼ÓĞĞ
+// æ·»åŠ è¡Œ
 int CDuiGridCtrl::InsertRow(int nRow, CString strId, int nImageIndex, Color clrText, CString strImage,
 							 int nRightImageIndex, CString strRightImage, int nCheck, Color clrBack)
 {
@@ -505,10 +505,10 @@ int CDuiGridCtrl::InsertRow(int nRow, CString strId, int nImageIndex, Color clrT
 		rowInfo.bRowBackColor = TRUE;
 	}
 
-	// ×ó±ßÍ¼Æ¬
+	// å·¦è¾¹å›¾ç‰‡
 	if(!strImage.IsEmpty())
 	{
-		// Ê¹ÓÃĞĞÊı¾İÖ¸¶¨µÄÍ¼Æ¬
+		// ä½¿ç”¨è¡Œæ•°æ®æŒ‡å®šçš„å›¾ç‰‡
 		if(DuiSystem::Instance()->LoadImageFile(strImage, m_bImageUseECM, rowInfo.pImage))
 		{
 			rowInfo.sizeImage.SetSize(rowInfo.pImage->GetWidth() / 1, rowInfo.pImage->GetHeight());
@@ -517,7 +517,7 @@ int CDuiGridCtrl::InsertRow(int nRow, CString strId, int nImageIndex, Color clrT
 		}
 	}else
 	{
-		// Ê¹ÓÃË÷ÒıÍ¼Æ¬
+		// ä½¿ç”¨ç´¢å¼•å›¾ç‰‡
 		rowInfo.pImage = NULL;
 		if((rowInfo.nImageIndex != -1) && (m_pImage != NULL) && (m_pImage->GetLastStatus() == Ok))
 		{
@@ -527,10 +527,10 @@ int CDuiGridCtrl::InsertRow(int nRow, CString strId, int nImageIndex, Color clrT
 		}
 	}
 
-	// ÓÒ±ßÍ¼Æ¬
+	// å³è¾¹å›¾ç‰‡
 	if(!strRightImage.IsEmpty())
 	{
-		// Ê¹ÓÃĞĞÊı¾İÖ¸¶¨µÄÍ¼Æ¬
+		// ä½¿ç”¨è¡Œæ•°æ®æŒ‡å®šçš„å›¾ç‰‡
 		if(DuiSystem::Instance()->LoadImageFile(strRightImage, m_bImageUseECM, rowInfo.pRightImage))
 		{
 			rowInfo.sizeRightImage.SetSize(rowInfo.pRightImage->GetWidth() / 1, rowInfo.pRightImage->GetHeight());
@@ -539,7 +539,7 @@ int CDuiGridCtrl::InsertRow(int nRow, CString strId, int nImageIndex, Color clrT
 		}
 	}else
 	{
-		// Ê¹ÓÃË÷ÒıÍ¼Æ¬
+		// ä½¿ç”¨ç´¢å¼•å›¾ç‰‡
 		rowInfo.pRightImage = NULL;
 		if((rowInfo.nRightImageIndex != -1) && (m_pImage != NULL) && (m_pImage->GetLastStatus() == Ok))
 		{
@@ -552,7 +552,7 @@ int CDuiGridCtrl::InsertRow(int nRow, CString strId, int nImageIndex, Color clrT
 	return InsertRow(nRow, rowInfo);
 }
 
-// Ìí¼ÓĞĞ
+// æ·»åŠ è¡Œ
 int CDuiGridCtrl::InsertRow(int nRow, GridRowInfo &rowInfo)
 {
 	int nRetRow = -1;
@@ -567,14 +567,14 @@ int CDuiGridCtrl::InsertRow(int nRow, GridRowInfo &rowInfo)
 		nRetRow = nRow;
 	}
 
-	// ¼ÆËãËùÓĞ±í¸ñĞĞµÄÎ»ÖÃ
+	// è®¡ç®—æ‰€æœ‰è¡¨æ ¼è¡Œçš„ä½ç½®
 	CalcRowsPos();	
 
 	UpdateControl(true);
 	return nRetRow;
 }
 
-// ÉèÖÃ±í¸ñÏîÄÚÈİ(ÎÄ×Ö±í¸ñÏî)
+// è®¾ç½®è¡¨æ ¼é¡¹å†…å®¹(æ–‡å­—è¡¨æ ¼é¡¹)
 BOOL CDuiGridCtrl::SetSubItem(int nRow, int nItem, CString strTitle, CString strContent, BOOL bUseTitleFont, int nImageIndex, Color clrText, CString strImage)
 {
 	if((nRow < 0) || (nRow >= (int)m_vecRowInfo.size()))
@@ -618,10 +618,10 @@ BOOL CDuiGridCtrl::SetSubItem(int nRow, int nItem, CString strTitle, CString str
 	itemInfo.rcItem.SetRect(columnInfo.rcHeader.left, rowInfo.rcRow.top,
 			columnInfo.rcHeader.right, rowInfo.rcRow.bottom);
 
-	// Í¼Æ¬
+	// å›¾ç‰‡
 	if(!strImage.IsEmpty())
 	{
-		// Ê¹ÓÃĞĞÊı¾İÖ¸¶¨µÄÍ¼Æ¬
+		// ä½¿ç”¨è¡Œæ•°æ®æŒ‡å®šçš„å›¾ç‰‡
 		if(DuiSystem::Instance()->LoadImageFile(strImage, m_bImageUseECM, itemInfo.pImage))
 		{
 			itemInfo.sizeImage.SetSize(itemInfo.pImage->GetWidth() / 1, itemInfo.pImage->GetHeight());
@@ -630,7 +630,7 @@ BOOL CDuiGridCtrl::SetSubItem(int nRow, int nItem, CString strTitle, CString str
 		}
 	}else
 	{
-		// Ê¹ÓÃË÷ÒıÍ¼Æ¬
+		// ä½¿ç”¨ç´¢å¼•å›¾ç‰‡
 		itemInfo.pImage = NULL;
 		if((itemInfo.nImageIndex != -1) && (m_pImage != NULL) && (m_pImage->GetLastStatus() == Ok))
 		{
@@ -643,7 +643,7 @@ BOOL CDuiGridCtrl::SetSubItem(int nRow, int nItem, CString strTitle, CString str
 	return TRUE;
 }
 
-// ÉèÖÃ±í¸ñÏîÄÚÈİ(Á´½Ó±í¸ñÏî)
+// è®¾ç½®è¡¨æ ¼é¡¹å†…å®¹(é“¾æ¥è¡¨æ ¼é¡¹)
 BOOL CDuiGridCtrl::SetSubItemLink(int nRow, int nItem, CString strLink, CString strLinkAction, int nImageIndex, Color clrText, CString strImage)
 {
 	if((nRow < 0) || (nRow >= (int)m_vecRowInfo.size()))
@@ -687,10 +687,10 @@ BOOL CDuiGridCtrl::SetSubItemLink(int nRow, int nItem, CString strLink, CString 
 	itemInfo.rcItem.SetRect(columnInfo.rcHeader.left, rowInfo.rcRow.top,
 			columnInfo.rcHeader.right, rowInfo.rcRow.bottom);
 
-	// Í¼Æ¬
+	// å›¾ç‰‡
 	if(!strImage.IsEmpty())
 	{
-		// Ê¹ÓÃĞĞÊı¾İÖ¸¶¨µÄÍ¼Æ¬
+		// ä½¿ç”¨è¡Œæ•°æ®æŒ‡å®šçš„å›¾ç‰‡
 		if(DuiSystem::Instance()->LoadImageFile(strImage, m_bImageUseECM, itemInfo.pImage))
 		{
 			itemInfo.sizeImage.SetSize(itemInfo.pImage->GetWidth() / 1, itemInfo.pImage->GetHeight());
@@ -699,7 +699,7 @@ BOOL CDuiGridCtrl::SetSubItemLink(int nRow, int nItem, CString strLink, CString 
 		}
 	}else
 	{
-		// Ê¹ÓÃË÷ÒıÍ¼Æ¬
+		// ä½¿ç”¨ç´¢å¼•å›¾ç‰‡
 		itemInfo.pImage = NULL;
 		if((itemInfo.nImageIndex != -1) && (m_pImage != NULL) && (m_pImage->GetLastStatus() == Ok))
 		{
@@ -712,7 +712,7 @@ BOOL CDuiGridCtrl::SetSubItemLink(int nRow, int nItem, CString strLink, CString 
 	return TRUE;
 }
 
-// ¸ø±í¸ñÏîÌí¼Ó×Ó¿Ø¼ş
+// ç»™è¡¨æ ¼é¡¹æ·»åŠ å­æ§ä»¶
 BOOL CDuiGridCtrl::AddSubItemControl(int nRow, int nItem, CControlBase* pControl)
 {
 	if((nRow < 0) || (nRow >= (int)m_vecRowInfo.size()))
@@ -739,9 +739,9 @@ BOOL CDuiGridCtrl::AddSubItemControl(int nRow, int nItem, CControlBase* pControl
 	{
 		pControl->SetParent(this);
 		pControl->SetVisible(FALSE);
-		// ½«¿Ø¼şÖ¸ÕëÌí¼Óµ½gridctrl¿Ø¼şµÄ×Ó¿Ø¼şÁĞ±íÖĞ
+		// å°†æ§ä»¶æŒ‡é’ˆæ·»åŠ åˆ°gridctrlæ§ä»¶çš„å­æ§ä»¶åˆ—è¡¨ä¸­
 		m_vecControl.push_back(pControl);
-		// ½«¿Ø¼şÖ¸ÕëÌí¼Óµ½µ¥Ôª¸ñµÄ¿Ø¼şÁĞ±íÖĞ(½öÓÃÓÚ°´ÕÕµ¥Ôª¸ñ²éÕÒ×Ó¿Ø¼ş)
+		// å°†æ§ä»¶æŒ‡é’ˆæ·»åŠ åˆ°å•å…ƒæ ¼çš„æ§ä»¶åˆ—è¡¨ä¸­(ä»…ç”¨äºæŒ‰ç…§å•å…ƒæ ¼æŸ¥æ‰¾å­æ§ä»¶)
 		pItemInfo->vecControl.push_back(pControl);
 		UpdateControl(true);
 	}
@@ -749,10 +749,10 @@ BOOL CDuiGridCtrl::AddSubItemControl(int nRow, int nItem, CControlBase* pControl
 	return TRUE;
 }
 
-// É¾³ı±í¸ñÏîµÄÖ¸¶¨×Ó¿Ø¼ş(Í¨¹ı¿Ø¼ş¶ÔÏóÖ¸ÕëÉ¾³ı)
+// åˆ é™¤è¡¨æ ¼é¡¹çš„æŒ‡å®šå­æ§ä»¶(é€šè¿‡æ§ä»¶å¯¹è±¡æŒ‡é’ˆåˆ é™¤)
 BOOL CDuiGridCtrl::DeleteSubItemControl(CControlBase* pControl)
 {
-	// ²éÕÒËùÓĞµ¥Ôª¸ñ,É¾³ı¶ÔÓ¦µÄ¿Ø¼ş¶ÔÏóÒıÓÃ
+	// æŸ¥æ‰¾æ‰€æœ‰å•å…ƒæ ¼,åˆ é™¤å¯¹åº”çš„æ§ä»¶å¯¹è±¡å¼•ç”¨
 	for(size_t i = 0; i < m_vecRowInfo.size(); i++)
 	{
 		GridRowInfo &rowInfo = m_vecRowInfo.at(i);
@@ -772,16 +772,16 @@ BOOL CDuiGridCtrl::DeleteSubItemControl(CControlBase* pControl)
 		}
 	}
 
-	// É¾³ı×Ó¿Ø¼şÖĞ¶ÔÓ¦µÄ¿Ø¼ş¶ÔÏó
+	// åˆ é™¤å­æ§ä»¶ä¸­å¯¹åº”çš„æ§ä»¶å¯¹è±¡
 	RemoveControl(pControl);
 
 	return TRUE;
 }
 
-// É¾³ı±í¸ñÏîµÄÖ¸¶¨×Ó¿Ø¼ş(Í¨¹ı¿Ø¼şÃûºÍ¿Ø¼şIDÉ¾³ı)
+// åˆ é™¤è¡¨æ ¼é¡¹çš„æŒ‡å®šå­æ§ä»¶(é€šè¿‡æ§ä»¶åå’Œæ§ä»¶IDåˆ é™¤)
 BOOL CDuiGridCtrl::DeleteSubItemControl(CString strControlName, UINT uControlID)
 {
-	// ²éÕÒËùÓĞµ¥Ôª¸ñ,É¾³ı¶ÔÓ¦µÄ¿Ø¼ş¶ÔÏóÒıÓÃ
+	// æŸ¥æ‰¾æ‰€æœ‰å•å…ƒæ ¼,åˆ é™¤å¯¹åº”çš„æ§ä»¶å¯¹è±¡å¼•ç”¨
 	for(size_t i = 0; i < m_vecRowInfo.size(); i++)
 	{
 		GridRowInfo &rowInfo = m_vecRowInfo.at(i);
@@ -801,13 +801,13 @@ BOOL CDuiGridCtrl::DeleteSubItemControl(CString strControlName, UINT uControlID)
 		}
 	}
 
-	// É¾³ı×Ó¿Ø¼şÖĞ¶ÔÓ¦µÄ¿Ø¼ş¶ÔÏó
+	// åˆ é™¤å­æ§ä»¶ä¸­å¯¹åº”çš„æ§ä»¶å¯¹è±¡
 	RemoveControl(strControlName, uControlID);
 
 	return TRUE;
 }
 
-// É¾³ıĞĞ
+// åˆ é™¤è¡Œ
 BOOL CDuiGridCtrl::DeleteRow(int nRow)
 {
 	if((nRow < 0) || (nRow >= (int)m_vecRowInfo.size()))
@@ -815,7 +815,7 @@ BOOL CDuiGridCtrl::DeleteRow(int nRow)
 		return FALSE;
 	}
 
-	// ²éÕÒĞĞµÄËùÓĞµ¥Ôª¸ñ,É¾³ı¶ÔÓ¦µÄ×Ó¿Ø¼ş¶ÔÏó
+	// æŸ¥æ‰¾è¡Œçš„æ‰€æœ‰å•å…ƒæ ¼,åˆ é™¤å¯¹åº”çš„å­æ§ä»¶å¯¹è±¡
 	GridRowInfo &rowInfo = m_vecRowInfo.at(nRow);
 	for(size_t j = 0; j < rowInfo.vecItemInfo.size(); j++)
 	{
@@ -824,12 +824,12 @@ BOOL CDuiGridCtrl::DeleteRow(int nRow)
 		for(it=itemInfo.vecControl.begin(); it!=itemInfo.vecControl.end(); ++it)
 		{
 			CControlBase* _pControl = *it;
-			// É¾³ıµ¥Ôª¸ñ°üº¬µÄ×Ó¿Ø¼ş
+			// åˆ é™¤å•å…ƒæ ¼åŒ…å«çš„å­æ§ä»¶
 			RemoveControl(_pControl);
 		}
 	}
 
-	// É¾³ıĞĞĞÅÏ¢
+	// åˆ é™¤è¡Œä¿¡æ¯
 	int nIndex = 0;
 	vector<GridRowInfo>::iterator it;
 	for(it=m_vecRowInfo.begin();it!=m_vecRowInfo.end();++it)
@@ -842,20 +842,20 @@ BOOL CDuiGridCtrl::DeleteRow(int nRow)
 		nIndex++;
 	}
 
-	// ¼ÆËãËùÓĞ±í¸ñĞĞµÄÎ»ÖÃ
+	// è®¡ç®—æ‰€æœ‰è¡¨æ ¼è¡Œçš„ä½ç½®
 	CalcRowsPos();
 
 	UpdateControl(true);
 	return true;
 }
 
-// ¼ÆËã±í¸ñĞĞÎ»ÖÃ
+// è®¡ç®—è¡¨æ ¼è¡Œä½ç½®
 void CDuiGridCtrl::CalcRowsPos()
 {
 	int nXPos = 0;//m_rc.left;
 	int nYPos = 0;//m_rc.top;
 
-	// ¼ÆËãÃ¿Ò»ĞĞµÄÎ»ÖÃ
+	// è®¡ç®—æ¯ä¸€è¡Œçš„ä½ç½®
 	for(size_t i = 0; i < m_vecRowInfo.size(); i++)
 	{
 		GridRowInfo &rowInfoTemp = m_vecRowInfo.at(i);
@@ -864,7 +864,7 @@ void CDuiGridCtrl::CalcRowsPos()
 
 		rowInfoTemp.rcCheck.SetRect(0,0,0,0);
 
-		// ¼ÆËãµ¥Ôª¸ñÎ»ÖÃ
+		// è®¡ç®—å•å…ƒæ ¼ä½ç½®
 		for(size_t j = 0; j < rowInfoTemp.vecItemInfo.size(); j++)
 		{
 			GridItemInfo &itemInfo = rowInfoTemp.vecItemInfo.at(j);
@@ -876,36 +876,36 @@ void CDuiGridCtrl::CalcRowsPos()
 		nYPos += m_nRowHeight;
 	}
 
-	// ĞèÒªµÄ×Ü¸ß¶È´óÓÚÏÔÊ¾Çø¸ß¶È²Å»áÏÔÊ¾¹ö¶¯Ìõ
+	// éœ€è¦çš„æ€»é«˜åº¦å¤§äºæ˜¾ç¤ºåŒºé«˜åº¦æ‰ä¼šæ˜¾ç¤ºæ»šåŠ¨æ¡
 	m_pControScrollV->SetVisible(((int)m_vecRowInfo.size() * m_nRowHeight) > (m_rc.Height() - m_nHeaderHeight));
 	((CDuiScrollVertical*)m_pControScrollV)->SetScrollMaxRange(m_vecRowInfo.size() * m_nRowHeight);
 }
 
-// ¼ÆËã±í¸ñÁĞÎ»ÖÃ
+// è®¡ç®—è¡¨æ ¼åˆ—ä½ç½®
 void CDuiGridCtrl::CalcColumnsPos()
 {
 	int nTotalWidth = GetTotalColumnWidth();
 
-	// ĞèÒªµÄ×Ü¸ß¶È´óÓÚÏÔÊ¾Çø¸ß¶È²Å»áÏÔÊ¾¹ö¶¯Ìõ
+	// éœ€è¦çš„æ€»é«˜åº¦å¤§äºæ˜¾ç¤ºåŒºé«˜åº¦æ‰ä¼šæ˜¾ç¤ºæ»šåŠ¨æ¡
 	m_pControScrollH->SetVisible(nTotalWidth > m_rc.Width());
 	((CDuiScrollHorizontal*)m_pControScrollH)->SetScrollMaxRange(nTotalWidth);
 
-	// ÉèÖÃË®Æ½¹ö¶¯ÌõÎ»ÖÃ
+	// è®¾ç½®æ°´å¹³æ»šåŠ¨æ¡ä½ç½®
 	if(nTotalWidth > m_rc.Width())
 	{
 		CRect rcTemp = m_rc;
 		rcTemp.top = rcTemp.bottom - m_nScrollWidth;
 		rcTemp.right = rcTemp.right - m_nScrollWidth;
 		m_pControScrollH->SetRect(rcTemp);
-		// Ë®Æ½¹ö¶¯Ìõµ±Ç°Î»ÖÃ±£³Ö²»±ä
+		// æ°´å¹³æ»šåŠ¨æ¡å½“å‰ä½ç½®ä¿æŒä¸å˜
 		//((CDuiScrollHorizontal*)m_pControScrollH)->SetScrollCurrentPos();
 	}
 }
 
-// ½«Ö¸¶¨µÄĞĞ¹ö¶¯µ½¿É¼û·¶Î§
+// å°†æŒ‡å®šçš„è¡Œæ»šåŠ¨åˆ°å¯è§èŒƒå›´
 BOOL CDuiGridCtrl::EnsureVisible(int nRow, BOOL bPartialOK)
 {
-	// Èç¹ûÖ¸¶¨µÄĞĞÒÑ¾­´¦ÓÚ¿É¼û·¶Î§ÔòÖ±½Ó·µ»Ø
+	// å¦‚æœæŒ‡å®šçš„è¡Œå·²ç»å¤„äºå¯è§èŒƒå›´åˆ™ç›´æ¥è¿”å›
 	if((nRow >= m_nFirstViewRow) && (nRow <= m_nLastViewRow))
 	{
 		return TRUE;
@@ -929,7 +929,7 @@ BOOL CDuiGridCtrl::EnsureVisible(int nRow, BOOL bPartialOK)
 	return TRUE;
 }
 
-// ¸ù¾İĞĞID»ñÈ¡ĞĞË÷Òı
+// æ ¹æ®è¡ŒIDè·å–è¡Œç´¢å¼•
 int CDuiGridCtrl::GetRowById(CString strRowId)
 {
 	for (size_t i = 0; i < m_vecRowInfo.size(); i++)
@@ -944,7 +944,7 @@ int CDuiGridCtrl::GetRowById(CString strRowId)
 	return -1;
 }
 
-// »ñÈ¡Ä³Ò»¸öĞĞĞÅÏ¢
+// è·å–æŸä¸€ä¸ªè¡Œä¿¡æ¯
 GridRowInfo* CDuiGridCtrl::GetRowInfo(int nRow)
 {
 	if((nRow < 0) || (nRow >= (int)m_vecRowInfo.size()))
@@ -956,7 +956,7 @@ GridRowInfo* CDuiGridCtrl::GetRowInfo(int nRow)
 	return &rowInfo;
 }
 
-// »ñÈ¡Ä³Ò»¸öµ¥Ôª¸ñĞÅÏ¢
+// è·å–æŸä¸€ä¸ªå•å…ƒæ ¼ä¿¡æ¯
 GridItemInfo* CDuiGridCtrl::GetItemInfo(int nRow, int nItem)
 {
 	if((nRow < 0) || (nRow >= (int)m_vecRowInfo.size()))
@@ -980,7 +980,7 @@ GridItemInfo* CDuiGridCtrl::GetItemInfo(int nRow, int nItem)
 	return &itemInfo;
 }
 
-// »ñÈ¡Ä³Ò»¸öµ¥Ôª¸ñµÄÎÄ×ÖÄÚÈİ
+// è·å–æŸä¸€ä¸ªå•å…ƒæ ¼çš„æ–‡å­—å†…å®¹
 CString CDuiGridCtrl::GetItemText(int nRow, int nItem)
 {
 	GridItemInfo* pGridInfo = GetItemInfo(nRow, nItem);
@@ -992,7 +992,7 @@ CString CDuiGridCtrl::GetItemText(int nRow, int nItem)
 	return _T("");
 }
 
-// ÉèÖÃÄ³Ò»¸öĞĞµÄÎÄ×ÖÑÕÉ«
+// è®¾ç½®æŸä¸€ä¸ªè¡Œçš„æ–‡å­—é¢œè‰²
 void CDuiGridCtrl::SetRowColor(int nRow, Color clrText)
 {
 	if((nRow < 0) || (nRow >= (int)m_vecRowInfo.size()))
@@ -1005,7 +1005,7 @@ void CDuiGridCtrl::SetRowColor(int nRow, Color clrText)
 	rowInfo.clrText = clrText;
 }
 
-// ÉèÖÃÄ³Ò»¸öĞĞµÄ±³¾°ÑÕÉ«
+// è®¾ç½®æŸä¸€ä¸ªè¡Œçš„èƒŒæ™¯é¢œè‰²
 void CDuiGridCtrl::SetRowBackColor(int nRow, Color clrBack)
 {
 	if((nRow < 0) || (nRow >= (int)m_vecRowInfo.size()))
@@ -1018,7 +1018,7 @@ void CDuiGridCtrl::SetRowBackColor(int nRow, Color clrBack)
 	rowInfo.clrBack = clrBack;
 }
 
-// ÉèÖÃÄ³Ò»¸öĞĞµÄ¼ì²é¿ò×´Ì¬
+// è®¾ç½®æŸä¸€ä¸ªè¡Œçš„æ£€æŸ¥æ¡†çŠ¶æ€
 void CDuiGridCtrl::SetRowCheck(int nRow, int nCheck)
 {
 	if((nRow < 0) || (nRow >= (int)m_vecRowInfo.size()))
@@ -1030,7 +1030,7 @@ void CDuiGridCtrl::SetRowCheck(int nRow, int nCheck)
 	rowInfo.nCheck = nCheck;
 }
 
-// »ñÈ¡Ä³Ò»ĞĞµÄ¼ì²é¿ò×´Ì¬
+// è·å–æŸä¸€è¡Œçš„æ£€æŸ¥æ¡†çŠ¶æ€
 int CDuiGridCtrl::GetRowCheck(int nRow)
 {
 	if((nRow < 0) || (nRow >= (int)m_vecRowInfo.size()))
@@ -1064,10 +1064,10 @@ DWORD CDuiGridCtrl::GetRowData(int nRow)
 	return rowInfo.dwData;
 }
 
-// Çå¿ÕÁĞ±í
+// æ¸…ç©ºåˆ—è¡¨
 void CDuiGridCtrl::ClearItems()
 {
-	// É¾³ıËùÓĞ×Ó¿Ø¼ş
+	// åˆ é™¤æ‰€æœ‰å­æ§ä»¶
 	for(size_t i = 0; i < m_vecRowInfo.size(); i++)
 	{
 		GridRowInfo &rowInfo = m_vecRowInfo.at(i);
@@ -1085,10 +1085,12 @@ void CDuiGridCtrl::ClearItems()
 
 	m_vecRowInfo.clear();
 	m_pControScrollV->SetVisible(FALSE);
+	if (m_nHeaderCheck != -1)
+		m_nHeaderCheck = 0;
 	UpdateControl(true);
 }
 
-// ´ÓXMLÉèÖÃFont-titleÊôĞÔ
+// ä»XMLè®¾ç½®Font-titleå±æ€§
 HRESULT CDuiGridCtrl::OnAttributeFontTitle(const CString& strValue, BOOL bLoading)
 {
 	if (strValue.IsEmpty()) return E_FAIL;
@@ -1135,38 +1137,38 @@ void CDuiGridCtrl::SetControlRect(CRect rc)
 		}
 	}
 
-	// ¼ÆËãºáÏò¹ö¶¯Ìõ
+	// è®¡ç®—æ¨ªå‘æ»šåŠ¨æ¡
 	CalcColumnsPos();
-	// ÖØĞÂ¼ÆËãËùÓĞĞĞµÄÎ»ÖÃ
+	// é‡æ–°è®¡ç®—æ‰€æœ‰è¡Œçš„ä½ç½®
 	CalcRowsPos();
 }
 
-// ÅĞ¶ÏÖ¸¶¨µÄ×ø±êÎ»ÖÃÊÇ·ñÔÚÄ³Ò»ĞĞÖĞ
+// åˆ¤æ–­æŒ‡å®šçš„åæ ‡ä½ç½®æ˜¯å¦åœ¨æŸä¸€è¡Œä¸­
 BOOL CDuiGridCtrl::PtInRow(CPoint point, GridRowInfo& rowInfo)
 {
 	CRect rc = rowInfo.rcRow;
-	// rcRow×ø±êÊÇ²åÈëĞĞ½ÚµãÊ±ºò¼ÆËã³öµÄ°´ÕÕ¿Ø¼şĞéÄâÏÔÊ¾ÇøÓòÎª²ÎÕÕµÄ×ø±ê,ĞèÒª×ª»»ÎªÊó±ê×ø±ê
+	// rcRowåæ ‡æ˜¯æ’å…¥è¡ŒèŠ‚ç‚¹æ—¶å€™è®¡ç®—å‡ºçš„æŒ‰ç…§æ§ä»¶è™šæ‹Ÿæ˜¾ç¤ºåŒºåŸŸä¸ºå‚ç…§çš„åæ ‡,éœ€è¦è½¬æ¢ä¸ºé¼ æ ‡åæ ‡
 	rc.OffsetRect(m_rc.left, m_rc.top+m_nHeaderHeight-m_nVirtualTop);
 	return rc.PtInRect(point);
 }
 
-// ÅĞ¶ÏÖ¸¶¨µÄ×ø±êÎ»ÖÃÊÇ·ñÔÚÄ³Ò»ĞĞµÄ¼ì²é¿òÖĞ
+// åˆ¤æ–­æŒ‡å®šçš„åæ ‡ä½ç½®æ˜¯å¦åœ¨æŸä¸€è¡Œçš„æ£€æŸ¥æ¡†ä¸­
 BOOL CDuiGridCtrl::PtInRowCheck(CPoint point, GridRowInfo& rowInfo)
 {
 	CRect rc = rowInfo.rcCheck;
-	// rcCheck×ø±êÊÇ»­Í¼Ê±ºò¼ÆËã³öµÄ°´ÕÕ¿Ø¼şĞéÄâÏÔÊ¾ÇøÓòÎª²ÎÕÕµÄ×ø±ê,ĞèÒª×ª»»ÎªÊó±ê×ø±ê
+	// rcCheckåæ ‡æ˜¯ç”»å›¾æ—¶å€™è®¡ç®—å‡ºçš„æŒ‰ç…§æ§ä»¶è™šæ‹Ÿæ˜¾ç¤ºåŒºåŸŸä¸ºå‚ç…§çš„åæ ‡,éœ€è¦è½¬æ¢ä¸ºé¼ æ ‡åæ ‡
 	rc.OffsetRect(m_rc.left - m_nVirtualLeft, m_rc.top+m_nHeaderHeight-m_nVirtualTop);
 	return rc.PtInRect(point);
 }
 
-// ÅĞ¶ÏÖ¸¶¨µÄ×ø±êÎ»ÖÃÊÇ·ñÔÚÄ³Ò»ĞĞµÄÄ³¸öÁĞÖĞ,·µ»ØÁĞË÷Òı
+// åˆ¤æ–­æŒ‡å®šçš„åæ ‡ä½ç½®æ˜¯å¦åœ¨æŸä¸€è¡Œçš„æŸä¸ªåˆ—ä¸­,è¿”å›åˆ—ç´¢å¼•
 int CDuiGridCtrl::PtInRowItem(CPoint point, GridRowInfo& rowInfo)
 {
 	for(size_t i = 0; i < rowInfo.vecItemInfo.size(); i++)
 	{
 		GridItemInfo &itemInfo = rowInfo.vecItemInfo.at(i);
 		CRect rc = itemInfo.rcItem;
-		// rcItem×ø±êÊÇ»­Í¼Ê±ºò¼ÆËã³öµÄ°´ÕÕ¿Ø¼şĞéÄâÏÔÊ¾ÇøÓòÎª²ÎÕÕµÄ×ø±ê,ĞèÒª×ª»»ÎªÊó±ê×ø±ê
+		// rcItemåæ ‡æ˜¯ç”»å›¾æ—¶å€™è®¡ç®—å‡ºçš„æŒ‰ç…§æ§ä»¶è™šæ‹Ÿæ˜¾ç¤ºåŒºåŸŸä¸ºå‚ç…§çš„åæ ‡,éœ€è¦è½¬æ¢ä¸ºé¼ æ ‡åæ ‡
 		rc.OffsetRect(m_rc.left + ((i == 0) ? m_nLeftPos : 0) - m_nVirtualLeft, m_rc.top+m_nHeaderHeight-m_nVirtualTop);
 		if(i == 0)
 		{
@@ -1181,7 +1183,7 @@ int CDuiGridCtrl::PtInRowItem(CPoint point, GridRowInfo& rowInfo)
 	return -1;
 }
 
-// ÉèÖÃµ¥Ôª¸ñµÄTooltip
+// è®¾ç½®å•å…ƒæ ¼çš„Tooltip
 void CDuiGridCtrl::SetGridTooltip(int nRow, int nItem, CString strTooltip)
 {
 	if((nRow < 0) || (nRow >= (int)m_vecRowInfo.size()))
@@ -1207,7 +1209,7 @@ void CDuiGridCtrl::SetGridTooltip(int nRow, int nItem, CString strTooltip)
 	}
 }
 
-// Çå³ıTooltip
+// æ¸…é™¤Tooltip
 void CDuiGridCtrl::ClearGridTooltip()
 {
 	CDlgBase* pDlg = GetParentDialog();
@@ -1231,13 +1233,13 @@ void CDuiGridCtrl::ClearGridTooltip()
 	}
 }
 
-// ÉèÖÃÅÅĞòµÄÁĞ
+// è®¾ç½®æ’åºçš„åˆ—
 void CDuiGridCtrl::SetSortColumn(int nCol)
 {
     m_nSortColumn = nCol;
 }
 
-// Õë¶ÔÖ¸¶¨µÄÁĞ°´ÕÕµ¥Ôª¸ñÎÄ×Ö½øĞĞÅÅĞò
+// é’ˆå¯¹æŒ‡å®šçš„åˆ—æŒ‰ç…§å•å…ƒæ ¼æ–‡å­—è¿›è¡Œæ’åº
 BOOL CDuiGridCtrl::SortTextItems(int nCol, BOOL bAscending)
 {
     SetSortColumn(nCol);
@@ -1245,10 +1247,10 @@ BOOL CDuiGridCtrl::SortTextItems(int nCol, BOOL bAscending)
     //ResetSelectedRange();
     //SetFocusCell(-1, - 1);
 
-	// ÅÅĞòËùÓĞĞĞ
+	// æ’åºæ‰€æœ‰è¡Œ
     BOOL bSort = SortTextItems(nCol, bAscending, 0, -1);
 
-	// ÖØĞÂ¼ÆËãËùÓĞĞĞµÄÎ»ÖÃ
+	// é‡æ–°è®¡ç®—æ‰€æœ‰è¡Œçš„ä½ç½®
 	CalcRowsPos();
 
 	UpdateControl(TRUE);
@@ -1256,7 +1258,7 @@ BOOL CDuiGridCtrl::SortTextItems(int nCol, BOOL bAscending)
 	return bSort;
 }
 
-// µ¥Ôª¸ñÎÄ×ÖÅÅĞòµÄµİ¹éÊµÏÖ
+// å•å…ƒæ ¼æ–‡å­—æ’åºçš„é€’å½’å®ç°
 BOOL CDuiGridCtrl::SortTextItems(int nCol, BOOL bAscending, int low, int high)
 {
 #if __cplusplus < 201103L
@@ -1301,7 +1303,7 @@ BOOL CDuiGridCtrl::SortTextItems(int nCol, BOOL bAscending, int low, int high)
 			// swap only if the items are not equal
 			if (GetItemText(lo, nCol) != GetItemText(hi, nCol))
 			{
-				// ½»»»ĞĞ
+				// äº¤æ¢è¡Œ
 				swap(m_vecRowInfo[lo], m_vecRowInfo[hi]);
 			}
 
@@ -1322,7 +1324,7 @@ BOOL CDuiGridCtrl::SortTextItems(int nCol, BOOL bAscending, int low, int high)
 
 	return TRUE;
 #else
-	// ÒÔÏÂ´úÂëÊ¹ÓÃÁËC++11ĞÂµÄlamdaÌØĞÔ,Ö»ÔÚVC2012ÒÔÉÏ°æ±¾Ê¹ÓÃ
+	// ä»¥ä¸‹ä»£ç ä½¿ç”¨äº†C++11æ–°çš„lamdaç‰¹æ€§,åªåœ¨VC2012ä»¥ä¸Šç‰ˆæœ¬ä½¿ç”¨
 	if (nCol >= GetColumnCount())
 		return FALSE;
 	std::sort(m_vecRowInfo.begin(), m_vecRowInfo.end(), 
@@ -1344,7 +1346,7 @@ BOOL CDuiGridCtrl::SortTextItems(int nCol, BOOL bAscending, int low, int high)
 #endif
 }
 
-// Õë¶ÔÖ¸¶¨µÄÁĞ°´ÕÕ×Ô¶¨ÒåÅÅĞòº¯Êı½øĞĞÅÅĞò
+// é’ˆå¯¹æŒ‡å®šçš„åˆ—æŒ‰ç…§è‡ªå®šä¹‰æ’åºå‡½æ•°è¿›è¡Œæ’åº
 BOOL CDuiGridCtrl::SortItems(PFN_GRIDCTRL_COMPARE pfnCompare, int nCol, BOOL bAscending)
 {
     SetSortColumn(nCol);
@@ -1352,10 +1354,10 @@ BOOL CDuiGridCtrl::SortItems(PFN_GRIDCTRL_COMPARE pfnCompare, int nCol, BOOL bAs
     //ResetSelectedRange();
     //SetFocusCell(-1, - 1);
 
-	// ÅÅĞòËùÓĞĞĞ
+	// æ’åºæ‰€æœ‰è¡Œ
     BOOL bSort = SortItems(pfnCompare, nCol, bAscending, 0, -1);
 
-	// ÖØĞÂ¼ÆËãËùÓĞĞĞµÄÎ»ÖÃ
+	// é‡æ–°è®¡ç®—æ‰€æœ‰è¡Œçš„ä½ç½®
 	CalcRowsPos();
 
 	UpdateControl(TRUE);
@@ -1363,7 +1365,7 @@ BOOL CDuiGridCtrl::SortItems(PFN_GRIDCTRL_COMPARE pfnCompare, int nCol, BOOL bAs
 	return bSort;
 }
 
-// µ¥Ôª¸ñ×Ô¶¨ÒåÅÅĞòº¯ÊıÅÅĞòµÄµİ¹éÊµÏÖ
+// å•å…ƒæ ¼è‡ªå®šä¹‰æ’åºå‡½æ•°æ’åºçš„é€’å½’å®ç°
 BOOL CDuiGridCtrl::SortItems(PFN_GRIDCTRL_COMPARE pfnCompare, int nCol, BOOL bAscending, int low, int high)
 {
 #if __cplusplus < 201103L
@@ -1408,7 +1410,7 @@ BOOL CDuiGridCtrl::SortItems(PFN_GRIDCTRL_COMPARE pfnCompare, int nCol, BOOL bAs
 			// swap only if the items are not equal
 			if (pfnCompare(GetItemInfo(lo, nCol), GetItemInfo(hi, nCol)) != 0)
 			{
-				// ½»»»ĞĞ
+				// äº¤æ¢è¡Œ
 				swap(m_vecRowInfo[lo], m_vecRowInfo[hi]);
 			}
 
@@ -1429,7 +1431,7 @@ BOOL CDuiGridCtrl::SortItems(PFN_GRIDCTRL_COMPARE pfnCompare, int nCol, BOOL bAs
 
 	return TRUE;
 #else
-	// ÒÔÏÂ´úÂëÊ¹ÓÃÁËC++11ĞÂµÄlamdaÌØĞÔ,Ö»ÔÚVC2012ÒÔÉÏ°æ±¾Ê¹ÓÃ
+	// ä»¥ä¸‹ä»£ç ä½¿ç”¨äº†C++11æ–°çš„lamdaç‰¹æ€§,åªåœ¨VC2012ä»¥ä¸Šç‰ˆæœ¬ä½¿ç”¨
 	if (nCol >= GetColumnCount())
 		return FALSE;
 	std::sort(m_vecRowInfo.begin(), m_vecRowInfo.end(), 
@@ -1451,7 +1453,7 @@ BOOL CDuiGridCtrl::SortItems(PFN_GRIDCTRL_COMPARE pfnCompare, int nCol, BOOL bAs
 #endif
 }
 
-// Êó±êÒÆ¶¯ÊÂ¼ş´¦Àí
+// é¼ æ ‡ç§»åŠ¨äº‹ä»¶å¤„ç†
 BOOL CDuiGridCtrl::OnControlMouseMove(UINT nFlags, CPoint point)
 {
 	if(m_vecRowInfo.size() == 0)
@@ -1459,7 +1461,7 @@ BOOL CDuiGridCtrl::OnControlMouseMove(UINT nFlags, CPoint point)
 		return false;
 	}
 
-	// ĞĞºÍµ¥Ôª¸ñµÄÊÂ¼ş´¦Àí
+	// è¡Œå’Œå•å…ƒæ ¼çš„äº‹ä»¶å¤„ç†
 	int nOldHoverRow = m_nHoverRow;
 	BOOL bHoverItemChange = FALSE;
 	int nOldHoverItem = -1;
@@ -1479,7 +1481,7 @@ BOOL CDuiGridCtrl::OnControlMouseMove(UINT nFlags, CPoint point)
 					UpdateControl(TRUE);
 				}
 
-				if(m_bGridTooltip)	// ÉèÖÃµ¥Ôª¸ñTooltip
+				if(m_bGridTooltip)	// è®¾ç½®å•å…ƒæ ¼Tooltip
 				{
 					GridItemInfo* pGridInfo = GetItemInfo(m_nHoverRow, rowInfo.nHoverItem);
 					if(pGridInfo && pGridInfo->bNeedTitleTip)
@@ -1515,7 +1517,7 @@ BOOL CDuiGridCtrl::OnControlMouseMove(UINT nFlags, CPoint point)
 					bHoverItemChange = TRUE;
 				}
 
-				if(m_bGridTooltip)	// ÉèÖÃµ¥Ôª¸ñTooltip
+				if(m_bGridTooltip)	// è®¾ç½®å•å…ƒæ ¼Tooltip
 				{
 					GridItemInfo* pGridInfo = GetItemInfo(m_nDownRow, rowInfo.nHoverItem);
 					if(pGridInfo && pGridInfo->bNeedTitleTip)
@@ -1557,7 +1559,7 @@ BOOL CDuiGridCtrl::OnControlMouseMove(UINT nFlags, CPoint point)
 		m_nHoverRow = -1;
 	}
 
-	// ±êÌâĞĞµÄ¼ì²é¿ò
+	// æ ‡é¢˜è¡Œçš„æ£€æŸ¥æ¡†
 	BOOL bHoverHeaderCheck = m_bHoverHeaderCheck;
 	if((m_nHeaderCheck != -1) && (m_nHeaderHeight > 0) && m_rc.PtInRect(point))
 	{
@@ -1575,7 +1577,7 @@ BOOL CDuiGridCtrl::OnControlMouseMove(UINT nFlags, CPoint point)
 		m_bHoverHeaderCheck = false;
 	}
 
-	// ÍÏ¶¯ÁĞ·Ö¸ôÏßÏà¹Ø±äÁ¿
+	// æ‹–åŠ¨åˆ—åˆ†éš”çº¿ç›¸å…³å˜é‡
 	enumButtonState buttonState = m_enButtonState;
 	BOOL bHoverSplitColumn = m_bHoverSplitColumn;
 
@@ -1597,8 +1599,8 @@ BOOL CDuiGridCtrl::OnControlMouseMove(UINT nFlags, CPoint point)
 						m_bHoverSplitColumn = true;
 						bMouseHover = TRUE;
 						m_enButtonState = enBSNormal;
-						// ÉèÖÃÊó±êĞÎ×´
-						m_hCursor = ::LoadCursor(NULL,MAKEINTRESOURCE(IDC_SIZEWE));	// Ë«¼ıÍ·Ö¸ÏòÄÏ±±
+						// è®¾ç½®é¼ æ ‡å½¢çŠ¶
+						m_hCursor = ::LoadCursor(NULL,MAKEINTRESOURCE(IDC_SIZEWE));	// åŒç®­å¤´æŒ‡å‘å—åŒ—
 						break;
 					}
 				}
@@ -1607,14 +1609,14 @@ BOOL CDuiGridCtrl::OnControlMouseMove(UINT nFlags, CPoint point)
 				{
 					m_bHoverSplitColumn = false;
 					m_enButtonState = enBSNormal;
-					// »¹Ô­Êó±êĞÎ×´
-					m_hCursor = ::LoadCursor(NULL,MAKEINTRESOURCE(IDC_ARROW));	// ¼ıÍ·
+					// è¿˜åŸé¼ æ ‡å½¢çŠ¶
+					m_hCursor = ::LoadCursor(NULL,MAKEINTRESOURCE(IDC_ARROW));	// ç®­å¤´
 				}
 			}
 		}
 		else
 		{
-			// Êó±ê°´×Å·Ö¸ôÏß»ò¹ö¶¯¿é,ÍÏ¶¯µÄÇé¿öÏÂ,ÔòÒÆ¶¯·Ö¸îÏß·¶Î§(Á¢¼´Ë¢ĞÂÄ£Ê½)
+			// é¼ æ ‡æŒ‰ç€åˆ†éš”çº¿æˆ–æ»šåŠ¨å—,æ‹–åŠ¨çš„æƒ…å†µä¸‹,åˆ™ç§»åŠ¨åˆ†å‰²çº¿èŒƒå›´(ç«‹å³åˆ·æ–°æ¨¡å¼)
 			MoveColumnSplit(m_nHoverSplitColumn, point.x-m_rc.left+m_nVirtualLeft);
 			return true;
 		}
@@ -1632,13 +1634,13 @@ BOOL CDuiGridCtrl::OnControlMouseMove(UINT nFlags, CPoint point)
 	return false;
 }
 
-// Êó±ê×ó¼ü°´ÏÂÊÂ¼ş´¦Àí
+// é¼ æ ‡å·¦é”®æŒ‰ä¸‹äº‹ä»¶å¤„ç†
 BOOL CDuiGridCtrl::OnControlLButtonDown(UINT nFlags, CPoint point)
 {
-	// ÉèÖÃ´°¿Ú½¹µã,·ñÔò¿ÉÄÜÎŞ·¨½øĞĞ¹ö¶¯ÊÂ¼şµÄ´¦Àí
+	// è®¾ç½®çª—å£ç„¦ç‚¹,å¦åˆ™å¯èƒ½æ— æ³•è¿›è¡Œæ»šåŠ¨äº‹ä»¶çš„å¤„ç†
 	SetWindowFocus();
 
-	// ±íÍ·µÄÁĞÒÆ¶¯ÊÂ¼ş´¦Àí
+	// è¡¨å¤´çš„åˆ—ç§»åŠ¨äº‹ä»¶å¤„ç†
 	enumButtonState buttonState = m_enButtonState;
 	if (!m_bIsDisable && m_bEnableModifyColumn)
 	{
@@ -1650,7 +1652,7 @@ BOOL CDuiGridCtrl::OnControlLButtonDown(UINT nFlags, CPoint point)
 			rcSplit.OffsetRect(m_rc.left - m_nVirtualLeft, m_rc.top);
 			if(rcSplit.PtInRect(point))
 			{
-				// Èç¹ûÔÚ·Ö¸ôÏßÄÚ,Ôò¼ÇÂ¼Êó±êÎ»ÖÃ
+				// å¦‚æœåœ¨åˆ†éš”çº¿å†…,åˆ™è®°å½•é¼ æ ‡ä½ç½®
 				m_enButtonState = enBSDown;
 				m_nHoverSplitColumn = i;
 				break;
@@ -1664,17 +1666,17 @@ BOOL CDuiGridCtrl::OnControlLButtonDown(UINT nFlags, CPoint point)
 		return true;
 	}
 
-	// ĞĞÊÂ¼ş´¦Àí
+	// è¡Œäº‹ä»¶å¤„ç†
 	if(m_vecRowInfo.size() == 0)
 	{
 		return false;
 	}
 
-	// ±í¸ñĞĞµÄ¼ì²é¿òÊÂ¼ş´¦Àí
+	// è¡¨æ ¼è¡Œçš„æ£€æŸ¥æ¡†äº‹ä»¶å¤„ç†
 	if((m_nHoverRow >= 0) && (m_nHoverRow < (int)m_vecRowInfo.size()))
 	{
 		GridRowInfo &rowInfo = m_vecRowInfo.at(m_nHoverRow);
-		if(PtInRow(point, rowInfo) && !PtInRowCheck(point, rowInfo))	// ¼ì²é¿òÊÂ¼şÖ»ÔÚÊó±ê·Å¿ªÊ±ºò´¥·¢
+		if(PtInRow(point, rowInfo) && !PtInRowCheck(point, rowInfo))	// æ£€æŸ¥æ¡†äº‹ä»¶åªåœ¨é¼ æ ‡æ”¾å¼€æ—¶å€™è§¦å‘
 		{
 			rowInfo.nHoverItem = PtInRowItem(point, rowInfo);
 			if(m_nDownRow != m_nHoverRow)
@@ -1695,9 +1697,9 @@ BOOL CDuiGridCtrl::OnControlLButtonDown(UINT nFlags, CPoint point)
 	}else
 	if((m_nDownRow >= 0) && (m_nDownRow < (int)m_vecRowInfo.size()))
 	{
-		// Èç¹ûµã»÷µÄ»¹ÊÇÖ®Ç°µã»÷µÄĞĞ£¬Ò²Í¬Ñù»á·¢ËÍÊó±êµã»÷ÊÂ¼ş
+		// å¦‚æœç‚¹å‡»çš„è¿˜æ˜¯ä¹‹å‰ç‚¹å‡»çš„è¡Œï¼Œä¹ŸåŒæ ·ä¼šå‘é€é¼ æ ‡ç‚¹å‡»äº‹ä»¶
 		GridRowInfo &rowInfo = m_vecRowInfo.at(m_nDownRow);
-		if(PtInRow(point, rowInfo)&& !PtInRowCheck(point, rowInfo))	// ¼ì²é¿òÊÂ¼şÖ»ÔÚÊó±ê·Å¿ªÊ±ºò´¥·¢
+		if(PtInRow(point, rowInfo)&& !PtInRowCheck(point, rowInfo))	// æ£€æŸ¥æ¡†äº‹ä»¶åªåœ¨é¼ æ ‡æ”¾å¼€æ—¶å€™è§¦å‘
 		{
 			rowInfo.nHoverItem = PtInRowItem(point, rowInfo);
 			SendMessage(MSG_BUTTON_DOWN, m_nDownRow, rowInfo.nHoverItem);
@@ -1708,10 +1710,10 @@ BOOL CDuiGridCtrl::OnControlLButtonDown(UINT nFlags, CPoint point)
 	return false;
 }
 
-// Êó±ê×ó¼ü·Å¿ªÊÂ¼ş´¦Àí
+// é¼ æ ‡å·¦é”®æ”¾å¼€äº‹ä»¶å¤„ç†
 BOOL CDuiGridCtrl::OnControlLButtonUp(UINT nFlags, CPoint point)
 {
-	// ±íÍ·µÄÁĞÒÆ¶¯ÊÂ¼ş´¦Àí
+	// è¡¨å¤´çš„åˆ—ç§»åŠ¨äº‹ä»¶å¤„ç†
 	enumButtonState buttonState = m_enButtonState;
 	if (!m_bIsDisable && m_bEnableModifyColumn)
 	{
@@ -1729,7 +1731,7 @@ BOOL CDuiGridCtrl::OnControlLButtonUp(UINT nFlags, CPoint point)
 			}
 		}
 
-		// Êó±ê·Å¿ª·Ö¸ôÏß»ò¹ö¶¯¿é,ÔòÒÆ¶¯·Ö¸îÏß·¶Î§
+		// é¼ æ ‡æ”¾å¼€åˆ†éš”çº¿æˆ–æ»šåŠ¨å—,åˆ™ç§»åŠ¨åˆ†å‰²çº¿èŒƒå›´
 		if(m_nHoverSplitColumn != -1)
 		{
 			MoveColumnSplit(m_nHoverSplitColumn, point.x-m_rc.left+m_nVirtualLeft);
@@ -1738,7 +1740,7 @@ BOOL CDuiGridCtrl::OnControlLButtonUp(UINT nFlags, CPoint point)
 
 	m_nHoverSplitColumn = -1;
 
-	// ±êÌâĞĞµÄ¼ì²é¿òÊÂ¼ş´¦Àí
+	// æ ‡é¢˜è¡Œçš„æ£€æŸ¥æ¡†äº‹ä»¶å¤„ç†
 	if((m_nHeaderCheck != -1) && (m_nHeaderHeight > 0) && m_rc.PtInRect(point))
 	{
 		CRect rcHeaderCheck = m_rcHeaderCheck;
@@ -1747,7 +1749,7 @@ BOOL CDuiGridCtrl::OnControlLButtonUp(UINT nFlags, CPoint point)
 		{
 			m_nHeaderCheck = ((m_nHeaderCheck == 1) ? 0 : 1);
 
-			// ÉèÖÃËùÓĞĞĞµÄ¼ì²é¿ò×´Ì¬(Èç¹ûÄ³Ò»ĞĞµÄ¼ì²é¿ò²»ÏÔÊ¾,Ôò²»ÉèÖÃ)
+			// è®¾ç½®æ‰€æœ‰è¡Œçš„æ£€æŸ¥æ¡†çŠ¶æ€(å¦‚æœæŸä¸€è¡Œçš„æ£€æŸ¥æ¡†ä¸æ˜¾ç¤º,åˆ™ä¸è®¾ç½®)
 			for(size_t i = 0; i < m_vecRowInfo.size(); i++)
 			{
 				GridRowInfo &rowInfo = m_vecRowInfo.at(i);
@@ -1764,7 +1766,7 @@ BOOL CDuiGridCtrl::OnControlLButtonUp(UINT nFlags, CPoint point)
 		}
 	}
 
-	// ±íÍ·µÄÅÅĞòÊÂ¼ş´¦Àí
+	// è¡¨å¤´çš„æ’åºäº‹ä»¶å¤„ç†
 	if(!m_bIsDisable && GetHeaderSort())
 	{
 		for(size_t i = 0; i < m_vecColumnInfo.size(); i++)
@@ -1777,7 +1779,7 @@ BOOL CDuiGridCtrl::OnControlLButtonUp(UINT nFlags, CPoint point)
 			{
 				if(i == GetSortColumn())
 				{
-					// Èç¹ûÊÇµ±Ç°ÅÅĞòÁĞ,ÔòÇĞ»»ÅÅĞò×´Ì¬
+					// å¦‚æœæ˜¯å½“å‰æ’åºåˆ—,åˆ™åˆ‡æ¢æ’åºçŠ¶æ€
 					if(m_pfnCompare == NULL)
 					{
 						SortTextItems(i, !GetSortAscending());
@@ -1787,7 +1789,7 @@ BOOL CDuiGridCtrl::OnControlLButtonUp(UINT nFlags, CPoint point)
 					}
 				}else
 				{
-					// ²»ÊÇµ±Ç°ÅÅĞòÁĞ,ÔòÇĞ»»ÅÅĞòÁĞ,ĞÂÁĞÄ¬ÈÏÉèÖÃÎªÉıĞò
+					// ä¸æ˜¯å½“å‰æ’åºåˆ—,åˆ™åˆ‡æ¢æ’åºåˆ—,æ–°åˆ—é»˜è®¤è®¾ç½®ä¸ºå‡åº
 					if(m_pfnCompare == NULL)
 					{
 						SortTextItems(i, TRUE);
@@ -1801,23 +1803,23 @@ BOOL CDuiGridCtrl::OnControlLButtonUp(UINT nFlags, CPoint point)
 		}
 	}
 
-	// ĞĞÊÂ¼ş´¦Àí
+	// è¡Œäº‹ä»¶å¤„ç†
 	if(m_vecRowInfo.size() == 0)
 	{
 		return false;
 	}
 
-	// ±í¸ñĞĞµÄ¼ì²é¿òÊÂ¼ş´¦Àí
+	// è¡¨æ ¼è¡Œçš„æ£€æŸ¥æ¡†äº‹ä»¶å¤„ç†
 	if((m_nHoverRow >= 0) && (m_nHoverRow < (int)m_vecRowInfo.size()))
 	{
 		GridRowInfo &rowInfo = m_vecRowInfo.at(m_nHoverRow);
 		if(PtInRow(point, rowInfo))
 		{
-			if(PtInRowCheck(point, rowInfo))	// ¼ì²é¿ò×´Ì¬¸Ä±ä
+			if(PtInRowCheck(point, rowInfo))	// æ£€æŸ¥æ¡†çŠ¶æ€æ”¹å˜
 			{
 				if(m_bSingleCheck)
 				{
-					// ¼ì²é¿òµ¥Ñ¡Ä£Ê½,µ±Ç°ĞĞÉèÖÃÎª1,ÆäËûĞĞÉèÖÃÎª0
+					// æ£€æŸ¥æ¡†å•é€‰æ¨¡å¼,å½“å‰è¡Œè®¾ç½®ä¸º1,å…¶ä»–è¡Œè®¾ç½®ä¸º0
 					for(size_t i = 0; i < m_vecRowInfo.size(); i++)
 					{
 						GridRowInfo &rowInfoTemp = m_vecRowInfo.at(i);
@@ -1840,15 +1842,15 @@ BOOL CDuiGridCtrl::OnControlLButtonUp(UINT nFlags, CPoint point)
 	}else
 	if((m_nDownRow >= 0) && (m_nDownRow < (int)m_vecRowInfo.size()))
 	{
-		// Èç¹ûµã»÷µÄ»¹ÊÇÖ®Ç°µã»÷µÄĞĞ£¬Ò²Í¬Ñù»á·¢ËÍÊó±êµã»÷ÊÂ¼ş
+		// å¦‚æœç‚¹å‡»çš„è¿˜æ˜¯ä¹‹å‰ç‚¹å‡»çš„è¡Œï¼Œä¹ŸåŒæ ·ä¼šå‘é€é¼ æ ‡ç‚¹å‡»äº‹ä»¶
 		GridRowInfo &rowInfo = m_vecRowInfo.at(m_nDownRow);
 		if(PtInRow(point, rowInfo))
 		{
-			if(PtInRowCheck(point, rowInfo))	// ¼ì²é¿ò×´Ì¬¸Ä±ä
+			if(PtInRowCheck(point, rowInfo))	// æ£€æŸ¥æ¡†çŠ¶æ€æ”¹å˜
 			{
 				if(m_bSingleCheck)
 				{
-					// ¼ì²é¿òµ¥Ñ¡Ä£Ê½,µ±Ç°ĞĞÉèÖÃÎª1,ÆäËûĞĞÉèÖÃÎª0
+					// æ£€æŸ¥æ¡†å•é€‰æ¨¡å¼,å½“å‰è¡Œè®¾ç½®ä¸º1,å…¶ä»–è¡Œè®¾ç½®ä¸º0
 					for(size_t i = 0; i < m_vecRowInfo.size(); i++)
 					{
 						GridRowInfo &rowInfoTemp = m_vecRowInfo.at(i);
@@ -1873,7 +1875,7 @@ BOOL CDuiGridCtrl::OnControlLButtonUp(UINT nFlags, CPoint point)
 	return false;
 }
 
-// Êó±ê×ó¼üË«»÷ÊÂ¼ş´¦Àí
+// é¼ æ ‡å·¦é”®åŒå‡»äº‹ä»¶å¤„ç†
 BOOL CDuiGridCtrl::OnControlLButtonDblClk(UINT nFlags, CPoint point)
 {
 	if(m_vecRowInfo.size() == 0)
@@ -1898,7 +1900,7 @@ BOOL CDuiGridCtrl::OnControlLButtonDblClk(UINT nFlags, CPoint point)
 	return false;
 }
 
-// ´¹Ö±¹ö¶¯ÊÂ¼ş´¦Àí
+// å‚ç›´æ»šåŠ¨äº‹ä»¶å¤„ç†
 BOOL CDuiGridCtrl::OnControlScroll(BOOL bVertical, UINT nFlags, CPoint point)
 {
 	if(((int)m_vecRowInfo.size() * m_nRowHeight) <= m_rc.Height() - m_nHeaderHeight)
@@ -1906,7 +1908,7 @@ BOOL CDuiGridCtrl::OnControlScroll(BOOL bVertical, UINT nFlags, CPoint point)
 		return false;
 	}
 
-	// ¸üĞÂ¹ö¶¯Ìõ,²¢Ë¢ĞÂ½çÃæ
+	// æ›´æ–°æ»šåŠ¨æ¡,å¹¶åˆ·æ–°ç•Œé¢
 	CDuiScrollVertical* pScrollV = (CDuiScrollVertical*)m_pControScrollV;
 	if(pScrollV->ScrollRow((nFlags == SB_LINEDOWN) ? 1 : -1))
 	{
@@ -1916,7 +1918,7 @@ BOOL CDuiGridCtrl::OnControlScroll(BOOL bVertical, UINT nFlags, CPoint point)
 	return true;
 }
 
-// Êó±êÓÒ¼ü°´ÏÂÊÂ¼ş´¦Àí
+// é¼ æ ‡å³é”®æŒ‰ä¸‹äº‹ä»¶å¤„ç†
 BOOL CDuiGridCtrl::OnControlRButtonDown(UINT nFlags, CPoint point)
 {
 	if(m_vecRowInfo.size() == 0)
@@ -1924,14 +1926,14 @@ BOOL CDuiGridCtrl::OnControlRButtonDown(UINT nFlags, CPoint point)
 		return false;
 	}
 
-	// ÉèÖÃ´°¿Ú½¹µã,·ñÔò¿ÉÄÜÎŞ·¨½øĞĞ¹ö¶¯ÊÂ¼şµÄ´¦Àí
+	// è®¾ç½®çª—å£ç„¦ç‚¹,å¦åˆ™å¯èƒ½æ— æ³•è¿›è¡Œæ»šåŠ¨äº‹ä»¶çš„å¤„ç†
 	SetWindowFocus();
 
-	// ±í¸ñĞĞµÄ¼ì²é¿òÊÂ¼ş´¦Àí
+	// è¡¨æ ¼è¡Œçš„æ£€æŸ¥æ¡†äº‹ä»¶å¤„ç†
 	if((m_nHoverRow >= 0) && (m_nHoverRow < (int)m_vecRowInfo.size()))
 	{
 		GridRowInfo &rowInfo = m_vecRowInfo.at(m_nHoverRow);
-		if(PtInRow(point, rowInfo) && !PtInRowCheck(point, rowInfo))	// ¼ì²é¿òÊÂ¼şÖ»ÔÚÊó±ê·Å¿ªÊ±ºò´¥·¢
+		if(PtInRow(point, rowInfo) && !PtInRowCheck(point, rowInfo))	// æ£€æŸ¥æ¡†äº‹ä»¶åªåœ¨é¼ æ ‡æ”¾å¼€æ—¶å€™è§¦å‘
 		{
 			rowInfo.nHoverItem = PtInRowItem(point, rowInfo);
 			if(m_nDownRow != m_nHoverRow)
@@ -1952,9 +1954,9 @@ BOOL CDuiGridCtrl::OnControlRButtonDown(UINT nFlags, CPoint point)
 	} else
 	if((m_nDownRow >= 0) && (m_nDownRow < (int)m_vecRowInfo.size()))
 	{
-		// Èç¹ûµã»÷µÄ»¹ÊÇÖ®Ç°µã»÷µÄĞĞ£¬Ò²Í¬Ñù»á·¢ËÍÊó±êµã»÷ÊÂ¼ş
+		// å¦‚æœç‚¹å‡»çš„è¿˜æ˜¯ä¹‹å‰ç‚¹å‡»çš„è¡Œï¼Œä¹ŸåŒæ ·ä¼šå‘é€é¼ æ ‡ç‚¹å‡»äº‹ä»¶
 		GridRowInfo &rowInfo = m_vecRowInfo.at(m_nDownRow);
-		if(PtInRow(point, rowInfo)&& !PtInRowCheck(point, rowInfo))	// ¼ì²é¿òÊÂ¼şÖ»ÔÚÊó±ê·Å¿ªÊ±ºò´¥·¢
+		if(PtInRow(point, rowInfo)&& !PtInRowCheck(point, rowInfo))	// æ£€æŸ¥æ¡†äº‹ä»¶åªåœ¨é¼ æ ‡æ”¾å¼€æ—¶å€™è§¦å‘
 		{
 			rowInfo.nHoverItem = PtInRowItem(point, rowInfo);
 			SendMessage(MSG_MOUSE_RDOWN, m_nDownRow, rowInfo.nHoverItem);
@@ -1965,7 +1967,7 @@ BOOL CDuiGridCtrl::OnControlRButtonDown(UINT nFlags, CPoint point)
 	return false;
 }
 
-// Êó±êÓÒ¼ü·Å¿ªÊÂ¼ş´¦Àí
+// é¼ æ ‡å³é”®æ”¾å¼€äº‹ä»¶å¤„ç†
 BOOL CDuiGridCtrl::OnControlRButtonUp(UINT nFlags, CPoint point)
 {
 	if(m_vecRowInfo.size() == 0)
@@ -1973,14 +1975,14 @@ BOOL CDuiGridCtrl::OnControlRButtonUp(UINT nFlags, CPoint point)
 		return false;
 	}
 
-	// ±í¸ñĞĞµÄ¼ì²é¿òÊÂ¼ş´¦Àí
+	// è¡¨æ ¼è¡Œçš„æ£€æŸ¥æ¡†äº‹ä»¶å¤„ç†
 	if((m_nHoverRow >= 0) && (m_nHoverRow < (int)m_vecRowInfo.size()))
 	{
 		GridRowInfo &rowInfo = m_vecRowInfo.at(m_nHoverRow);
 		if(PtInRow(point, rowInfo) && !PtInRowCheck(point, rowInfo))
 		{
-			//È¡·´£¬·ñÔòÏûÏ¢²»ÄÜ·¢ËÍ
-			if(!PtInRowCheck(point, rowInfo))	// ¼ì²é¿ò×´Ì¬¸Ä±ä
+			//å–åï¼Œå¦åˆ™æ¶ˆæ¯ä¸èƒ½å‘é€
+			if(!PtInRowCheck(point, rowInfo))	// æ£€æŸ¥æ¡†çŠ¶æ€æ”¹å˜
 			{
 				rowInfo.nHoverItem = PtInRowItem(point, rowInfo);
 				SendMessage(MSG_MOUSE_RUP, m_nHoverRow, rowInfo.nHoverItem);
@@ -1992,7 +1994,7 @@ BOOL CDuiGridCtrl::OnControlRButtonUp(UINT nFlags, CPoint point)
 	}else
 	if((m_nDownRow >= 0) && (m_nDownRow < (int)m_vecRowInfo.size()))
 	{
-		// Èç¹ûµã»÷µÄ»¹ÊÇÖ®Ç°µã»÷µÄĞĞ£¬Ò²Í¬Ñù»á·¢ËÍÊó±êµã»÷ÊÂ¼ş
+		// å¦‚æœç‚¹å‡»çš„è¿˜æ˜¯ä¹‹å‰ç‚¹å‡»çš„è¡Œï¼Œä¹ŸåŒæ ·ä¼šå‘é€é¼ æ ‡ç‚¹å‡»äº‹ä»¶
 		GridRowInfo &rowInfo = m_vecRowInfo.at(m_nDownRow);
 		if(PtInRow(point, rowInfo) && !PtInRowCheck(point, rowInfo))
 		{
@@ -2006,10 +2008,10 @@ BOOL CDuiGridCtrl::OnControlRButtonUp(UINT nFlags, CPoint point)
 	return false;
 }
 
-// ¼üÅÌÊÂ¼ş´¦Àí
+// é”®ç›˜äº‹ä»¶å¤„ç†
 BOOL CDuiGridCtrl::OnControlKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
-	// Èç¹ûµ±Ç°´¦ÓÚ½¹µã×´Ì¬,ÓÃÉÏÏÂ¼ü¿ÉÒÔÒÆ¶¯µ±Ç°Ñ¡ÔñĞĞ
+	// å¦‚æœå½“å‰å¤„äºç„¦ç‚¹çŠ¶æ€,ç”¨ä¸Šä¸‹é”®å¯ä»¥ç§»åŠ¨å½“å‰é€‰æ‹©è¡Œ
 	if(IsFocusControl() && m_bEnableDownRow && (nChar == VK_UP) && (nFlags == 0))
 	{
 		if(m_nDownRow > 0)
@@ -2034,22 +2036,22 @@ BOOL CDuiGridCtrl::OnControlKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	return __super::OnControlKeyDown(nChar, nRepCnt, nFlags);
 }
 
-// ÏûÏ¢ÏìÓ¦
+// æ¶ˆæ¯å“åº”
 LRESULT CDuiGridCtrl::OnMessage(UINT uID, UINT Msg, WPARAM wParam, LPARAM lParam)
 {
 	if(((uID == SCROLL_V) || (uID == SCROLL_H)) && (Msg == MSG_SCROLL_CHANGE))
 	{
-		// Èç¹ûÊÇ¹ö¶¯ÌõµÄÎ»ÖÃ±ä¸üÊÂ¼ş,ÔòË¢ĞÂÏÔÊ¾
+		// å¦‚æœæ˜¯æ»šåŠ¨æ¡çš„ä½ç½®å˜æ›´äº‹ä»¶,åˆ™åˆ·æ–°æ˜¾ç¤º
 		UpdateControl(true);
 	}else
 	if((uID == GetID()) && (Msg == MSG_BUTTON_DOWN) && (lParam != -1))
 	{
-		// µã»÷ÁËĞĞµÄÄ³¸öÁ´½Ó
+		// ç‚¹å‡»äº†è¡Œçš„æŸä¸ªé“¾æ¥
 		GridRowInfo* pRowInfo = GetRowInfo(wParam);
 		if(pRowInfo && (lParam >= 0) && (lParam < (int)pRowInfo->vecItemInfo.size()))
 		{
 			GridItemInfo &itemInfo = pRowInfo->vecItemInfo.at(lParam);
-			// ×ª»»ÎªMSG_BUTTON_UPÏûÏ¢,ÒòÎªDuiSystemÈÎÎñ´¦ÀíÊ±ºòÖ»´¦ÀíMSG_BUTTON_UPÏûÏ¢
+			// è½¬æ¢ä¸ºMSG_BUTTON_UPæ¶ˆæ¯,å› ä¸ºDuiSystemä»»åŠ¡å¤„ç†æ—¶å€™åªå¤„ç†MSG_BUTTON_UPæ¶ˆæ¯
 			if(!itemInfo.strLinkAction.IsEmpty())
 			{
 				DuiSystem::AddDuiActionTask(uID, MSG_BUTTON_UP, wParam, lParam, GetName(), itemInfo.strLinkAction, GetParent());
@@ -2062,36 +2064,36 @@ LRESULT CDuiGridCtrl::OnMessage(UINT uID, UINT Msg, WPARAM wParam, LPARAM lParam
 
 void CDuiGridCtrl::DrawControl(CDC &dc, CRect rcUpdate)
 {
-	// ÁĞ±í»­Í¼·½·¨:
-	// 1.ÁĞ±íµÄĞéÄâ¸ß¶ÈÎªÃ¿Ò»ĞĞ¸ß¶È*ĞĞÊı
-	// 2.ÁĞ±íÏÔÊ¾µÄtop×ø±êÓÉscroll¿Ø¼ş¼ÇÂ¼
-	// 3.ÖØ»­Ê±ºò,¸ù¾İtop×ø±êÎ»ÖÃ¼ÆËã³öÏÔÊ¾µÄµÚÒ»ĞĞµÄĞòºÅ,¸ù¾İÏÔÊ¾¸ß¶È¼ÆËã³öÏÔÊ¾µÄ×îºóÒ»ĞĞµÄĞòºÅ
-	// 4.¸ù¾İ¼ÆËã³öµÄÏÔÊ¾µÄĞĞ,»­ÏàÓ¦µÄÄÚÈİµ½ÄÚ´ædcÖĞ
-	// 5.¼ÆËã³öÏÔÊ¾µÄtop×ø±ê½øĞĞÄÚ´ædcµÄ¿½±´
-	int nTotalColumnWidth = GetTotalColumnWidth();	// ×ÜµÄÁĞ¿í¶È
-	int nViewWidth = m_rc.Width() - m_nScrollWidth;	// ¼õÈ¥¹ö¶¯ÌõµÄÏÔÊ¾ÇøÓò¿í¶È
+	// åˆ—è¡¨ç”»å›¾æ–¹æ³•:
+	// 1.åˆ—è¡¨çš„è™šæ‹Ÿé«˜åº¦ä¸ºæ¯ä¸€è¡Œé«˜åº¦*è¡Œæ•°
+	// 2.åˆ—è¡¨æ˜¾ç¤ºçš„topåæ ‡ç”±scrollæ§ä»¶è®°å½•
+	// 3.é‡ç”»æ—¶å€™,æ ¹æ®topåæ ‡ä½ç½®è®¡ç®—å‡ºæ˜¾ç¤ºçš„ç¬¬ä¸€è¡Œçš„åºå·,æ ¹æ®æ˜¾ç¤ºé«˜åº¦è®¡ç®—å‡ºæ˜¾ç¤ºçš„æœ€åä¸€è¡Œçš„åºå·
+	// 4.æ ¹æ®è®¡ç®—å‡ºçš„æ˜¾ç¤ºçš„è¡Œ,ç”»ç›¸åº”çš„å†…å®¹åˆ°å†…å­˜dcä¸­
+	// 5.è®¡ç®—å‡ºæ˜¾ç¤ºçš„topåæ ‡è¿›è¡Œå†…å­˜dcçš„æ‹·è´
+	int nTotalColumnWidth = GetTotalColumnWidth();	// æ€»çš„åˆ—å®½åº¦
+	int nViewWidth = m_rc.Width() - m_nScrollWidth;	// å‡å»æ»šåŠ¨æ¡çš„æ˜¾ç¤ºåŒºåŸŸå®½åº¦
 	CDuiScrollHorizontal* pScrollH = (CDuiScrollHorizontal*)m_pControScrollH;
-	int nCurPosH = pScrollH->GetScrollCurrentPos();	// µ±Ç°leftÎ»ÖÃ
+	int nCurPosH = pScrollH->GetScrollCurrentPos();	// å½“å‰leftä½ç½®
 	int nMaxRangeH = pScrollH->GetScrollMaxRange();
-	int nContentWidth = (nTotalColumnWidth > nViewWidth) ? nTotalColumnWidth : nViewWidth;	// ÄÚÈİ²¿·ÖµÄ¿í¶È(Èç¹û×ÜµÄÁĞ¿íĞ¡ÓÚÏÔÊ¾ÇøÓò¿í¶È,ÔòÊ¹ÓÃÏÔÊ¾ÇøÓò¿í¶È)
-	m_nVirtualLeft = (nMaxRangeH > 0) ? (int)((double)nCurPosH*(nContentWidth-nViewWidth)/nMaxRangeH) : 0;	// µ±Ç°¹ö¶¯ÌõÎ»ÖÃ¶ÔÓ¦µÄĞéÄâµÄleftÎ»ÖÃ
+	int nContentWidth = (nTotalColumnWidth > nViewWidth) ? nTotalColumnWidth : nViewWidth;	// å†…å®¹éƒ¨åˆ†çš„å®½åº¦(å¦‚æœæ€»çš„åˆ—å®½å°äºæ˜¾ç¤ºåŒºåŸŸå®½åº¦,åˆ™ä½¿ç”¨æ˜¾ç¤ºåŒºåŸŸå®½åº¦)
+	m_nVirtualLeft = (nMaxRangeH > 0) ? (int)((double)nCurPosH*(nContentWidth-nViewWidth)/nMaxRangeH) : 0;	// å½“å‰æ»šåŠ¨æ¡ä½ç½®å¯¹åº”çš„è™šæ‹Ÿçš„leftä½ç½®
 
-	int nHeightAll = m_vecRowInfo.size()*m_nRowHeight; // ×ÜµÄĞéÄâ¸ß¶È //m_rc.Height();
+	int nHeightAll = m_vecRowInfo.size()*m_nRowHeight; // æ€»çš„è™šæ‹Ÿé«˜åº¦ //m_rc.Height();
 	CDuiScrollVertical* pScrollV = (CDuiScrollVertical*)m_pControScrollV;
-	int nCurPosV = pScrollV->GetScrollCurrentPos();	// µ±Ç°topÎ»ÖÃ
+	int nCurPosV = pScrollV->GetScrollCurrentPos();	// å½“å‰topä½ç½®
 	int nMaxRangeV = pScrollV->GetScrollMaxRange();
-	if(nTotalColumnWidth > m_rc.Width())	// Èç¹ûĞèÒªÏÔÊ¾Ë®Æ½¹ö¶¯Ìõ,Ôò´ºÖ®¹ö¶¯ÌõµÄ×î´ó·¶Î§Òª¼õÈ¥¹ö¶¯Ìõ¿í¶È
+	if(nTotalColumnWidth > m_rc.Width())	// å¦‚æœéœ€è¦æ˜¾ç¤ºæ°´å¹³æ»šåŠ¨æ¡,åˆ™æ˜¥ä¹‹æ»šåŠ¨æ¡çš„æœ€å¤§èŒƒå›´è¦å‡å»æ»šåŠ¨æ¡å®½åº¦
 	{
 		nMaxRangeV -= m_nScrollWidth;
 	}
-	m_nVirtualTop = (nMaxRangeV > 0) ? (int)((double)nCurPosV*(nHeightAll-(m_rc.Height() - m_nHeaderHeight))/nMaxRangeV) : 0;	// µ±Ç°¹ö¶¯ÌõÎ»ÖÃ¶ÔÓ¦µÄĞéÄâµÄtopÎ»ÖÃ
+	m_nVirtualTop = (nMaxRangeV > 0) ? (int)((double)nCurPosV*(nHeightAll-(m_rc.Height() - m_nHeaderHeight))/nMaxRangeV) : 0;	// å½“å‰æ»šåŠ¨æ¡ä½ç½®å¯¹åº”çš„è™šæ‹Ÿçš„topä½ç½®
 	if(m_nVirtualTop < 0)
 	{
 		m_nVirtualTop = 0;
 		pScrollV->SetScrollCurrentPos(0);
 	}
-	m_nFirstViewRow = m_nVirtualTop / m_nRowHeight;					// ÏÔÊ¾µÄµÚÒ»ĞĞĞòºÅ
-	m_nLastViewRow = (m_nVirtualTop + m_rc.Height() - m_nHeaderHeight) / m_nRowHeight;	// ÏÔÊ¾µÄ×îºóÒ»ĞĞĞòºÅ
+	m_nFirstViewRow = m_nVirtualTop / m_nRowHeight;					// æ˜¾ç¤ºçš„ç¬¬ä¸€è¡Œåºå·
+	m_nLastViewRow = (m_nVirtualTop + m_rc.Height() - m_nHeaderHeight) / m_nRowHeight;	// æ˜¾ç¤ºçš„æœ€åä¸€è¡Œåºå·
 	if(m_nLastViewRow >= (int)m_vecRowInfo.size())
 	{
 		m_nLastViewRow = m_vecRowInfo.size() - 1;
@@ -2100,8 +2102,8 @@ void CDuiGridCtrl::DrawControl(CDC &dc, CRect rcUpdate)
 	{
 		m_nLastViewRow = 0;
 	}
-	int nHeightView = (m_nLastViewRow - m_nFirstViewRow +1) * m_nRowHeight + m_nHeaderHeight;	// ÏÔÊ¾Éæ¼°µ½µÄĞéÄâ¸ß¶È
-	int nYViewPos = m_nVirtualTop - (m_nFirstViewRow * m_nRowHeight);		// ÄÚ´ædcÏÔÊ¾µ½ÆÁÄ»Ê±ºòµÄtopÎ»ÖÃ
+	int nHeightView = (m_nLastViewRow - m_nFirstViewRow +1) * m_nRowHeight + m_nHeaderHeight;	// æ˜¾ç¤ºæ¶‰åŠåˆ°çš„è™šæ‹Ÿé«˜åº¦
+	int nYViewPos = m_nVirtualTop - (m_nFirstViewRow * m_nRowHeight);		// å†…å­˜dcæ˜¾ç¤ºåˆ°å±å¹•æ—¶å€™çš„topä½ç½®
 	if(nYViewPos < 0)
 	{
 		nYViewPos = 0;
@@ -2113,15 +2115,15 @@ void CDuiGridCtrl::DrawControl(CDC &dc, CRect rcUpdate)
 
 		Graphics graphics(m_memDC);
 		
-		// »­°×É«±³¾°
+		// ç”»ç™½è‰²èƒŒæ™¯
 		m_memDC.BitBlt(m_nVirtualLeft, 0, nViewWidth, nHeightView, &dc, m_rc.left, m_rc.top, WHITENESS);	
-		// »­°ëÍ¸Ã÷±³¾°
-		// ±êÌâĞĞ²¿·Ö
+		// ç”»åŠé€æ˜èƒŒæ™¯
+		// æ ‡é¢˜è¡Œéƒ¨åˆ†
 		CRect rcTitle = m_rc;
 		rcTitle.bottom = rcTitle.top + m_nHeaderHeight;
 		DrawVerticalTransition(m_memDC, dc, CRect(m_nVirtualLeft, 0, nViewWidth+m_nVirtualLeft, m_nHeaderHeight),	
 				rcTitle, m_nBkTransparent, m_nBkTransparent);
-		// ÄÚÈİ²¿·Ö
+		// å†…å®¹éƒ¨åˆ†
 		CRect rcContent = m_rc;
 		rcContent.top = m_rc.top + m_nHeaderHeight;
 		DrawVerticalTransition(m_memDC, dc, CRect(m_nVirtualLeft, m_nHeaderHeight+nYViewPos, nViewWidth+m_nVirtualLeft, m_rc.Height()+nYViewPos),
@@ -2137,43 +2139,43 @@ void CDuiGridCtrl::DrawControl(CDC &dc, CRect rcUpdate)
 		Font font(&fontFamily, (REAL)m_nFontWidth, m_fontStyle, UnitPixel);
 		::SysFreeString(bsFont);
 
-		SolidBrush solidBrush(m_clrText);			// Õı³£ÎÄ×Ö»­Ë¢
-		SolidBrush solidBrushHT(m_clrHeader);		// ±êÌâĞĞÎÄ×Ö»­Ë¢
-		SolidBrush solidBrushH(m_clrTextHover);		// ÈÈµãÎÄ×Ö»­Ë¢
-		SolidBrush solidBrushD(m_clrTextDown);		// µ±Ç°ĞĞ»­Ë¢
-		SolidBrush solidBrushT(m_clrTitle);			// ±êÌâÎÄ×Ö»­Ë¢
-		SolidBrush solidBrushS(m_clrSeperator);		// ·Ö¸îÏß»­Ë¢
+		SolidBrush solidBrush(m_clrText);			// æ­£å¸¸æ–‡å­—ç”»åˆ·
+		SolidBrush solidBrushHT(m_clrHeader);		// æ ‡é¢˜è¡Œæ–‡å­—ç”»åˆ·
+		SolidBrush solidBrushH(m_clrTextHover);		// çƒ­ç‚¹æ–‡å­—ç”»åˆ·
+		SolidBrush solidBrushD(m_clrTextDown);		// å½“å‰è¡Œç”»åˆ·
+		SolidBrush solidBrushT(m_clrTitle);			// æ ‡é¢˜æ–‡å­—ç”»åˆ·
+		SolidBrush solidBrushS(m_clrSeperator);		// åˆ†å‰²çº¿ç”»åˆ·
 
 		graphics.SetTextRenderingHint( TextRenderingHintClearTypeGridFit );
 
-		// ÉèÖÃÆÕÍ¨ÎÄ×ÖµÄË®Æ½ºÍ´¹Ö±¶ÔÆë·½Ê½
+		// è®¾ç½®æ™®é€šæ–‡å­—çš„æ°´å¹³å’Œå‚ç›´å¯¹é½æ–¹å¼
 		DUI_STRING_ALIGN_DEFINE();
-		strFormat.SetTrimming(StringTrimmingEllipsisWord);	// ÒÔµ¥´ÊÎªµ¥Î»È¥Î²,ÂÔÈ¥²¿·ÖÊ¹ÓÃÊ¡ÂÔºÅ
+		strFormat.SetTrimming(StringTrimmingEllipsisWord);	// ä»¥å•è¯ä¸ºå•ä½å»å°¾,ç•¥å»éƒ¨åˆ†ä½¿ç”¨çœç•¥å·
 		//strFormat.SetFormatFlags( StringFormatFlagsNoClip | StringFormatFlagsMeasureTrailingSpaces);
 		if(!m_bTextWrap)
 		{
-			strFormat.SetFormatFlags(StringFormatFlagsNoWrap | StringFormatFlagsMeasureTrailingSpaces);	// ²»»»ĞĞ
+			strFormat.SetFormatFlags(StringFormatFlagsNoWrap | StringFormatFlagsMeasureTrailingSpaces);	// ä¸æ¢è¡Œ
 		}
 
-		// ÉèÖÃ±êÌâĞĞÎÄ×ÖµÄË®Æ½ºÍ´¹Ö±¶ÔÆë·½Ê½
+		// è®¾ç½®æ ‡é¢˜è¡Œæ–‡å­—çš„æ°´å¹³å’Œå‚ç›´å¯¹é½æ–¹å¼
 		DUI_STRING_ALIGN_DEFINENAME(Header, m_uAlignmentHeader, m_uVAlignmentHeader);
-		strFormatHeader.SetTrimming(StringTrimmingEllipsisCharacter);//ÒÔ×Ö·ûÎªµ¥Î»È¥Î²£¬ÂÔÈ¥²¿·ÖÊ¹ÓÃÊ¡ÂÔºÅ±íÊ¾
+		strFormatHeader.SetTrimming(StringTrimmingEllipsisCharacter);//ä»¥å­—ç¬¦ä¸ºå•ä½å»å°¾ï¼Œç•¥å»éƒ¨åˆ†ä½¿ç”¨çœç•¥å·è¡¨ç¤º
 		if(!m_bTextWrap)
 		{
-			strFormatHeader.SetFormatFlags(StringFormatFlagsNoWrap | StringFormatFlagsMeasureTrailingSpaces);	// ²»»»ĞĞ
+			strFormatHeader.SetFormatFlags(StringFormatFlagsNoWrap | StringFormatFlagsMeasureTrailingSpaces);	// ä¸æ¢è¡Œ
 		}
 
-		// »­±êÌâĞĞ
+		// ç”»æ ‡é¢˜è¡Œ
 		if((m_nHeaderHeight > 0) && (m_vecColumnInfo.size() > 0))
 		{
-			// »­±êÌâĞĞ±³¾°
+			// ç”»æ ‡é¢˜è¡ŒèƒŒæ™¯
 			if(m_pImageHeader != NULL)
 			{
 				CRect  rcHeader(m_nVirtualLeft, 0, nViewWidth+m_nVirtualLeft, m_nHeaderHeight);
 				DrawImageFrame(graphics, m_pImageHeader, rcHeader, 0, 0, m_sizeHeader.cx, m_sizeHeader.cy);
 			}
 
-			// »­¼ì²é¿ò
+			// ç”»æ£€æŸ¥æ¡†
 			int nXPos = 3;
 			int nCheckImgY = 3;
 			if((m_sizeCheckBoxDpi.cy*2 > m_nHeaderHeight) || (m_uVAlignment == VAlign_Middle))
@@ -2189,7 +2191,7 @@ void CDuiGridCtrl::DrawControl(CDC &dc, CRect rcUpdate)
 				nXPos += (m_sizeCheckBoxDpi.cx + DUI_DPI_X(3));
 			}
 
-			// »­µ¥Ôª¸ñÄÚÈİ
+			// ç”»å•å…ƒæ ¼å†…å®¹
 			int nPosItemX = nXPos;
 			for(size_t j = 0; j < m_vecColumnInfo.size(); j++)
 			{
@@ -2208,21 +2210,21 @@ void CDuiGridCtrl::DrawControl(CDC &dc, CRect rcUpdate)
 					nWidth = m_rc.Width() - nPosItemX;
 				}
 
-				// »­±êÌâĞĞÁĞ·Ö¸îÏß
+				// ç”»æ ‡é¢˜è¡Œåˆ—åˆ†å‰²çº¿
 				if((m_pImageColumnSeperator != NULL) && (j < (m_vecColumnInfo.size()-1)))
 				{
 					RectF rectSep((Gdiplus::REAL)(nPosItemX+nWidth), 0, (Gdiplus::REAL)m_sizeColumnSeperator.cx, (Gdiplus::REAL)(m_nHeaderHeight-1));
 					graphics.DrawImage(m_pImageColumnSeperator, rectSep, 0, 0, (Gdiplus::REAL)m_sizeColumnSeperator.cx, (Gdiplus::REAL)m_sizeColumnSeperator.cy, UnitPixel);
 				}
 
-				// »­ÁĞ±êÌâ
+				// ç”»åˆ—æ ‡é¢˜
 				RectF rect((Gdiplus::REAL)nPosItemX, 0, (Gdiplus::REAL)nWidth, (Gdiplus::REAL)(m_nHeaderHeight-1));
 				CString strTitle = columnInfo.strTitle;
 				BSTR bsTitle = strTitle.AllocSysString();
 				graphics.DrawString(bsTitle, (INT)wcslen(bsTitle), &fontTitle, rect, &strFormatHeader, &solidBrushHT);
 				::SysFreeString(bsTitle);
 
-				// »­±êÌâĞĞÅÅĞòÍ¼Æ¬
+				// ç”»æ ‡é¢˜è¡Œæ’åºå›¾ç‰‡
 				if((m_pImageHeaderSort != NULL) && (j == m_nSortColumn))
 				{
 					RectF rectSort((Gdiplus::REAL)(nPosItemX+nWidth-m_sizeHeaderSort.cx-5), (Gdiplus::REAL)((m_nHeaderHeight-m_sizeHeaderSort.cy) / 2 + 1),
@@ -2233,17 +2235,17 @@ void CDuiGridCtrl::DrawControl(CDC &dc, CRect rcUpdate)
 
 				nPosItemX += nWidth;
 			}
-			// »­·Ö¸ôÏß(²ÉÓÃÀ­ÉìÄ£Ê½)
+			// ç”»åˆ†éš”çº¿(é‡‡ç”¨æ‹‰ä¼¸æ¨¡å¼)
 			if(m_pImageSeperator != NULL)
 			{
-				// Ê¹ÓÃÀ­ÉìÄ£Ê½»­Í¼
+				// ä½¿ç”¨æ‹‰ä¼¸æ¨¡å¼ç”»å›¾
 				graphics.DrawImage(m_pImageSeperator,
 					RectF(0, (Gdiplus::REAL)(m_nHeaderHeight)-1, (Gdiplus::REAL)(nContentWidth-2), (Gdiplus::REAL)m_sizeSeperator.cy),
 					0, 0, (Gdiplus::REAL)m_sizeSeperator.cx, (Gdiplus::REAL)m_sizeSeperator.cy, UnitPixel);
 			}else
 				if(m_clrSeperator.GetValue() != Color(0, 0, 0, 0).GetValue())
 				{
-					// Î´Ö¸¶¨Í¼Æ¬,²¢ÇÒ·Ö¸ôÏßÏÔÉ«²»ÊÇÈ«0,Ôò»­¾ØĞÎ
+					// æœªæŒ‡å®šå›¾ç‰‡,å¹¶ä¸”åˆ†éš”çº¿æ˜¾è‰²ä¸æ˜¯å…¨0,åˆ™ç”»çŸ©å½¢
 					graphics.FillRectangle(&solidBrushS, 0, m_nHeaderHeight-1, nContentWidth-2, 1);
 				}
 		}
@@ -2253,29 +2255,29 @@ void CDuiGridCtrl::DrawControl(CDC &dc, CRect rcUpdate)
 			for(int i = m_nFirstViewRow; i <= m_nLastViewRow && i < (int)m_vecRowInfo.size(); i++)
 			{
 				GridRowInfo &rowInfo = m_vecRowInfo.at(i);
-				SolidBrush solidBrushRow(rowInfo.clrText);	// ĞĞ¶¨ÒåµÄÑÕÉ«
+				SolidBrush solidBrushRow(rowInfo.clrText);	// è¡Œå®šä¹‰çš„é¢œè‰²
 
 				int nXPos = 3;
 				int nVI = i - m_nFirstViewRow;
 
-				// Êó±êÒÆ¶¯µ½ĞĞÊ±ºòÏÔÊ¾µÄ±³¾°ÑÕÉ«(Èç¹ûÉèÖÃÎªÈ«0,Ôò²»ÏÔÊ¾ĞĞ±³¾°ÑÕÉ«)
+				// é¼ æ ‡ç§»åŠ¨åˆ°è¡Œæ—¶å€™æ˜¾ç¤ºçš„èƒŒæ™¯é¢œè‰²(å¦‚æœè®¾ç½®ä¸ºå…¨0,åˆ™ä¸æ˜¾ç¤ºè¡ŒèƒŒæ™¯é¢œè‰²)
 				if((m_nHoverRow == i) && (m_clrRowHover.GetValue() != Color(0, 0, 0, 0).GetValue()))
 				{
 					SolidBrush brush(m_clrRowHover);
 					graphics.FillRectangle(&brush, 0, m_nHeaderHeight + nVI*m_nRowHeight, nContentWidth, m_nRowHeight);
 				}else
-				if((m_nDownRow == i) && (m_clrRowCurrent.GetValue() != Color(0, 0, 0, 0).GetValue()))	// Èç¹ûÊÇµ±Ç°ĞĞ,ÏÔÊ¾µ±Ç°ĞĞµÄ±³¾°É«
+				if((m_nDownRow == i) && (m_clrRowCurrent.GetValue() != Color(0, 0, 0, 0).GetValue()))	// å¦‚æœæ˜¯å½“å‰è¡Œ,æ˜¾ç¤ºå½“å‰è¡Œçš„èƒŒæ™¯è‰²
 				{
 					SolidBrush brush(m_clrRowCurrent);
 					graphics.FillRectangle(&brush, 0, m_nHeaderHeight + nVI*m_nRowHeight, nContentWidth, m_nRowHeight);
 				}else
-				if(rowInfo.bRowBackColor)	// Èç¹ûÉèÖÃÁËĞĞµÄ±³¾°ÑÕÉ«,ÔòÌî³äÑÕÉ«
+				if(rowInfo.bRowBackColor)	// å¦‚æœè®¾ç½®äº†è¡Œçš„èƒŒæ™¯é¢œè‰²,åˆ™å¡«å……é¢œè‰²
 				{
 					SolidBrush brush(rowInfo.clrBack);
 					graphics.FillRectangle(&brush, 0, m_nHeaderHeight + nVI*m_nRowHeight, nContentWidth, m_nRowHeight);
 				}
 
-				// »­¼ì²é¿ò
+				// ç”»æ£€æŸ¥æ¡†
 				int nCheckImgY = 3;
 				if((m_sizeCheckBoxDpi.cy*2 > m_nRowHeight) || (m_uVAlignment == VAlign_Middle))
 				{
@@ -2290,7 +2292,7 @@ void CDuiGridCtrl::DrawControl(CDC &dc, CRect rcUpdate)
 					nXPos += (m_sizeCheckBoxDpi.cx + DUI_DPI_X(3));
 				}
 
-				// »­ĞĞ×ó±ßÍ¼Æ¬
+				// ç”»è¡Œå·¦è¾¹å›¾ç‰‡
 				int nImgY = 3;
 				if(rowInfo.pImage != NULL)
 				{
@@ -2298,7 +2300,7 @@ void CDuiGridCtrl::DrawControl(CDC &dc, CRect rcUpdate)
 					{
 						nImgY = (m_nRowHeight - rowInfo.sizeImageDpi.cy) / 2 + 1;
 					}
-					// Ê¹ÓÃĞĞÊı¾İÖ¸¶¨µÄÍ¼Æ¬
+					// ä½¿ç”¨è¡Œæ•°æ®æŒ‡å®šçš„å›¾ç‰‡
 					graphics.DrawImage(rowInfo.pImage, Rect(nXPos, m_nHeaderHeight + nVI*m_nRowHeight + nImgY, rowInfo.sizeImageDpi.cx, rowInfo.sizeImageDpi.cy),
 						0, 0, rowInfo.sizeImage.cx, rowInfo.sizeImage.cy, UnitPixel);
 					nXPos += (rowInfo.sizeImageDpi.cx + DUI_DPI_X(3));
@@ -2309,13 +2311,13 @@ void CDuiGridCtrl::DrawControl(CDC &dc, CRect rcUpdate)
 					{
 						nImgY = (m_nRowHeight - rowInfo.sizeImageDpi.cy) / 2 + 1;
 					}
-					// Ê¹ÓÃË÷ÒıÍ¼Æ¬
+					// ä½¿ç”¨ç´¢å¼•å›¾ç‰‡
 					graphics.DrawImage(m_pImage, Rect(nXPos, m_nHeaderHeight + nVI*m_nRowHeight + nImgY, rowInfo.sizeImageDpi.cx, rowInfo.sizeImageDpi.cy),
 						rowInfo.nImageIndex*m_sizeImage.cx, 0, m_sizeImage.cx, m_sizeImage.cy, UnitPixel);
 					nXPos += (rowInfo.sizeImageDpi.cx + DUI_DPI_X(3));
 				}
 
-				// »­ĞĞÓÒ±ßÍ¼Æ¬
+				// ç”»è¡Œå³è¾¹å›¾ç‰‡
 				int nRightImageWidth = 0;
 				nImgY = 3;
 				if(rowInfo.pRightImage != NULL)
@@ -2324,7 +2326,7 @@ void CDuiGridCtrl::DrawControl(CDC &dc, CRect rcUpdate)
 					{
 						nImgY = (m_nRowHeight - rowInfo.sizeRightImageDpi.cy) / 2 + 1;
 					}
-					// Ê¹ÓÃĞĞÊı¾İÖ¸¶¨µÄÍ¼Æ¬
+					// ä½¿ç”¨è¡Œæ•°æ®æŒ‡å®šçš„å›¾ç‰‡
 					graphics.DrawImage(rowInfo.pRightImage, Rect(nContentWidth-rowInfo.sizeRightImageDpi.cx-1, m_nHeaderHeight + nVI*m_nRowHeight + nImgY, rowInfo.sizeRightImageDpi.cx, rowInfo.sizeRightImageDpi.cy),
 						0, 0, rowInfo.sizeRightImage.cx, rowInfo.sizeRightImage.cy, UnitPixel);
 					nRightImageWidth = rowInfo.sizeRightImageDpi.cx + 1;
@@ -2335,14 +2337,15 @@ void CDuiGridCtrl::DrawControl(CDC &dc, CRect rcUpdate)
 					{
 						nImgY = (m_nRowHeight - rowInfo.sizeRightImageDpi.cy) / 2 + 1;
 					}
-					// Ê¹ÓÃË÷ÒıÍ¼Æ¬
+					// ä½¿ç”¨ç´¢å¼•å›¾ç‰‡
 					graphics.DrawImage(m_pImage, Rect(nContentWidth- rowInfo.sizeRightImageDpi.cx-1, m_nHeaderHeight + nVI*m_nRowHeight + nImgY, rowInfo.sizeRightImageDpi.cx, rowInfo.sizeRightImageDpi.cy),
 						rowInfo.nRightImageIndex*m_sizeImage.cx, 0, m_sizeImage.cx, m_sizeImage.cy, UnitPixel);
 					nRightImageWidth = rowInfo.sizeRightImageDpi.cx + 1;
 				}
 
-				// »­µ¥Ôª¸ñÄÚÈİ
-				int nPosItemX = (m_nLeftPos != 0) ? m_nLeftPos : nXPos;
+				// ç”»å•å…ƒæ ¼å†…å®¹
+				//int nPosItemX = (m_nLeftPos != 0) ? m_nLeftPos : nXPos;
+				int nPosItemX = nXPos;
 				for(size_t j = 0; j < rowInfo.vecItemInfo.size(); j++)
 				{
 					GridColumnInfo &columnInfo = m_vecColumnInfo.at(j);
@@ -2354,11 +2357,11 @@ void CDuiGridCtrl::DrawControl(CDC &dc, CRect rcUpdate)
 						(Gdiplus::REAL)(bSingleLine ? (m_nRowHeight - 2) : (m_nRowHeight / 2 - 2)));
 					if((int)(rect.GetRight()) > nContentWidth)
 					{
-						// ×îºóÒ»ÁĞĞèÒª¼õÈ¥¹ö¶¯Ìõ¿í¶È
+						// æœ€åä¸€åˆ—éœ€è¦å‡å»æ»šåŠ¨æ¡å®½åº¦
 						rect.Width -= m_nScrollWidth;
 					}
 
-					// »­µ¥Ôª¸ñÍ¼Æ¬
+					// ç”»å•å…ƒæ ¼å›¾ç‰‡
 					int nItemImageX = 0;
 					int nImgY = 3;
 					if(itemInfo.pImage != NULL)
@@ -2367,7 +2370,7 @@ void CDuiGridCtrl::DrawControl(CDC &dc, CRect rcUpdate)
 						{
 							nImgY = (m_nRowHeight - rowInfo.sizeImageDpi.cy) / 2 + 1;
 						}
-						// Ê¹ÓÃµ¥Ôª¸ñÖ¸¶¨µÄÍ¼Æ¬
+						// ä½¿ç”¨å•å…ƒæ ¼æŒ‡å®šçš„å›¾ç‰‡
 						graphics.DrawImage(itemInfo.pImage,
 							Rect(nPosItemX+nItemImageX, m_nHeaderHeight + nVI*m_nRowHeight + nImgY, itemInfo.sizeImageDpi.cx, itemInfo.sizeImageDpi.cy),
 							0, 0, itemInfo.sizeImage.cx, itemInfo.sizeImage.cy, UnitPixel);
@@ -2379,7 +2382,7 @@ void CDuiGridCtrl::DrawControl(CDC &dc, CRect rcUpdate)
 						{
 							nImgY = (m_nRowHeight - itemInfo.sizeImageDpi.cy) / 2 + 1;
 						}
-						// Ê¹ÓÃË÷ÒıÍ¼Æ¬
+						// ä½¿ç”¨ç´¢å¼•å›¾ç‰‡
 						graphics.DrawImage(m_pImage, Rect(nPosItemX+nItemImageX, m_nHeaderHeight + nVI*m_nRowHeight + nImgY, itemInfo.sizeImageDpi.cx, itemInfo.sizeImageDpi.cy),
 							itemInfo.nImageIndex*m_sizeImage.cx, 0, m_sizeImage.cx, m_sizeImage.cy, UnitPixel);
 						nItemImageX += (itemInfo.sizeImageDpi.cx + DUI_DPI_X(3));
@@ -2387,26 +2390,26 @@ void CDuiGridCtrl::DrawControl(CDC &dc, CRect rcUpdate)
 					rect.Offset((Gdiplus::REAL)nItemImageX, 0);
 					rect.Width -= (Gdiplus::REAL)nItemImageX;
 
-					// »­µ¥Ôª¸ñ±êÌâ»òÁ´½ÓÄÚÈİ
+					// ç”»å•å…ƒæ ¼æ ‡é¢˜æˆ–é“¾æ¥å†…å®¹
 					SolidBrush solidBrushItem(m_clrText);
-					if((m_nHoverRow == i) && (m_clrTextHover.GetValue() != Color(0, 0, 0, 0).GetValue()))	// ÉèÖÃÁËÊó±êÒÆ¶¯ÑÕÉ«,ÔòÊ¹ÓÃ
+					if((m_nHoverRow == i) && (m_clrTextHover.GetValue() != Color(0, 0, 0, 0).GetValue()))	// è®¾ç½®äº†é¼ æ ‡ç§»åŠ¨é¢œè‰²,åˆ™ä½¿ç”¨
 					{
 						solidBrushItem.SetColor(m_clrTextHover);
 					}else
-					if((m_nDownRow == i) && (m_clrTextDown.GetValue() != Color(0, 0, 0, 0).GetValue()))	// ÉèÖÃÁËÊó±ê°´ÏÂÑÕÉ«,ÔòÊ¹ÓÃ
+					if((m_nDownRow == i) && (m_clrTextDown.GetValue() != Color(0, 0, 0, 0).GetValue()))	// è®¾ç½®äº†é¼ æ ‡æŒ‰ä¸‹é¢œè‰²,åˆ™ä½¿ç”¨
 					{
 						solidBrushItem.SetColor(m_clrTextDown);
 					}else
-					if(itemInfo.clrText.GetValue() != Color(0, 0, 0, 0).GetValue())	// ÉèÖÃÁËµ¥Ôª¸ñÑÕÉ«,ÔòÊ¹ÓÃ
+					if(itemInfo.clrText.GetValue() != Color(0, 0, 0, 0).GetValue())	// è®¾ç½®äº†å•å…ƒæ ¼é¢œè‰²,åˆ™ä½¿ç”¨
 					{
 						solidBrushItem.SetColor(itemInfo.clrText);
 					}else
-					if(rowInfo.bRowColor)	// ÉèÖÃÁËĞĞÑÕÉ«,ÔòÊ¹ÓÃ
+					if(rowInfo.bRowColor)	// è®¾ç½®äº†è¡Œé¢œè‰²,åˆ™ä½¿ç”¨
 					{
 						solidBrushItem.SetColor(rowInfo.clrText);
 					}
 					CString strItemTitle = itemInfo.strTitle;
-					// ¼ÆËãÊÇ·ñĞèÒªÏÔÊ¾tip
+					// è®¡ç®—æ˜¯å¦éœ€è¦æ˜¾ç¤ºtip
 					itemInfo.bNeedTitleTip = rect.Width < GetTextBounds(font, strItemTitle).Width;
 					itemInfo.bNeedContentTip = rect.Width < GetTextBounds(font, itemInfo.strContent).Width;
 					if(!itemInfo.strLink.IsEmpty())
@@ -2421,9 +2424,9 @@ void CDuiGridCtrl::DrawControl(CDC &dc, CRect rcUpdate)
 						}
 					}
 
-					// ÉèÖÃµ¥Ôª¸ñÎÄ×Ö¶ÔÆë·½Ê½,Ê¹ÓÃÁĞµÄ¶ÔÆë·½Ê½
+					// è®¾ç½®å•å…ƒæ ¼æ–‡å­—å¯¹é½æ–¹å¼,ä½¿ç”¨åˆ—çš„å¯¹é½æ–¹å¼
 					StringFormat strFormatColumn;
-					strFormatColumn.SetTrimming(StringTrimmingEllipsisCharacter);//ÒÔ×Ö·ûÎªµ¥Î»È¥Î²£¬ÂÔÈ¥²¿·ÖÊ¹ÓÃÊ¡ÂÔºÅ±íÊ¾
+					strFormatColumn.SetTrimming(StringTrimmingEllipsisCharacter);//ä»¥å­—ç¬¦ä¸ºå•ä½å»å°¾ï¼Œç•¥å»éƒ¨åˆ†ä½¿ç”¨çœç•¥å·è¡¨ç¤º
 					UINT uAlignment = m_uAlignment;
 					if(columnInfo.uAlignment != 0xFFFFUL)
 					{
@@ -2460,16 +2463,16 @@ void CDuiGridCtrl::DrawControl(CDC &dc, CRect rcUpdate)
 					}
 					if(!m_bTextWrap)
 					{
-						strFormatColumn.SetFormatFlags(StringFormatFlagsNoWrap | StringFormatFlagsMeasureTrailingSpaces);	// ²»»»ĞĞ
+						strFormatColumn.SetFormatFlags(StringFormatFlagsNoWrap | StringFormatFlagsMeasureTrailingSpaces);	// ä¸æ¢è¡Œ
 					}
 
-					// ¸ù¾İbUseTitleFont¾ö¶¨ÓÃ±êÌâ×ÖÌå»¹ÊÇÆÕÍ¨×ÖÌå
+					// æ ¹æ®bUseTitleFontå†³å®šç”¨æ ‡é¢˜å­—ä½“è¿˜æ˜¯æ™®é€šå­—ä½“
 					BSTR bsItemTitle = strItemTitle.AllocSysString();
 					graphics.DrawString(bsItemTitle, (INT)wcslen(bsItemTitle),
 						itemInfo.bUseTitleFont ? &fontTitle : &font, rect, &strFormatColumn, itemInfo.bUseTitleFont ? &solidBrushT : &solidBrushItem);
 					::SysFreeString(bsItemTitle);
 
-					// »­µ¥Ôª¸ñÄÚÈİ
+					// ç”»å•å…ƒæ ¼å†…å®¹
 					if(!bSingleLine)
 					{
 						rect.Offset(0, (Gdiplus::REAL)m_nRowHeight / 2 + 2);
@@ -2479,7 +2482,7 @@ void CDuiGridCtrl::DrawControl(CDC &dc, CRect rcUpdate)
 						::SysFreeString(bsItemContent);
 					}
 
-					// ÉèÖÃµ¥Ôª¸ñ×Ó¿Ø¼şµÄÎ»ÖÃ
+					// è®¾ç½®å•å…ƒæ ¼å­æ§ä»¶çš„ä½ç½®
 					for(size_t k = 0; k < itemInfo.vecControl.size(); k++)
 					{
 						CControlBase* pControl = itemInfo.vecControl.at(k);
@@ -2489,13 +2492,13 @@ void CDuiGridCtrl::DrawControl(CDC &dc, CRect rcUpdate)
 								(int)(rect.X+rect.Width), m_nHeaderHeight + (nVI+1)*m_nRowHeight - 1);
 							if((int)(rect.GetRight()) > nContentWidth)
 							{
-								// ×îºóÒ»ÁĞĞèÒª¼õÈ¥¹ö¶¯Ìõ¿í¶È
+								// æœ€åä¸€åˆ—éœ€è¦å‡å»æ»šåŠ¨æ¡å®½åº¦
 								rcParent.right -= m_nScrollWidth;
 							}
 							rcParent.OffsetRect(m_rc.left - m_nVirtualLeft, m_rc.top - nYViewPos);
 							pControl->SetPositionWithParent(rcParent);
 							CRect rcControl = pControl->GetRect();
-							// Ö»ÓĞµ±Ç°ÔÚÏÔÊ¾·¶Î§ÄÚµÄ¿Ø¼şÉèÖÃÎª¿É¼û
+							// åªæœ‰å½“å‰åœ¨æ˜¾ç¤ºèŒƒå›´å†…çš„æ§ä»¶è®¾ç½®ä¸ºå¯è§
 							if( (rcControl.top < (m_rc.top+m_nHeaderHeight)) || (rcControl.bottom > m_rc.bottom) ||
 								(rcControl.left < m_rc.left) || (rcControl.right > m_rc.right) )
 							{
@@ -2509,7 +2512,7 @@ void CDuiGridCtrl::DrawControl(CDC &dc, CRect rcUpdate)
 
 					if(j == 0)
 					{
-						// ÎªÁËÊ¹µÚ¶şÁĞ¿ªÊ¼ÊÇ¶ÔÆëµÄ,ËùÒÔµÚ¶şÁĞ¿ªÊ¼Î»ÖÃ°´ÕÕµÚÒ»ÁĞµÄ¿í¶È¼ÆËã
+						// ä¸ºäº†ä½¿ç¬¬äºŒåˆ—å¼€å§‹æ˜¯å¯¹é½çš„,æ‰€ä»¥ç¬¬äºŒåˆ—å¼€å§‹ä½ç½®æŒ‰ç…§ç¬¬ä¸€åˆ—çš„å®½åº¦è®¡ç®—
 						nPosItemX = itemInfo.rcItem.right;
 					}else
 					{
@@ -2517,29 +2520,29 @@ void CDuiGridCtrl::DrawControl(CDC &dc, CRect rcUpdate)
 					}
 				}
 
-				// »­·Ö¸ôÏß(²ÉÓÃÀ­ÉìÄ£Ê½)
+				// ç”»åˆ†éš”çº¿(é‡‡ç”¨æ‹‰ä¼¸æ¨¡å¼)
 				if(m_pImageSeperator != NULL)
 				{
-					// Ê¹ÓÃÀ­ÉìÄ£Ê½»­Í¼
+					// ä½¿ç”¨æ‹‰ä¼¸æ¨¡å¼ç”»å›¾
 					graphics.DrawImage(m_pImageSeperator,
 							RectF(0, (Gdiplus::REAL)(m_nHeaderHeight + (nVI+1)*m_nRowHeight)-1, (Gdiplus::REAL)(nContentWidth-2), (Gdiplus::REAL)m_sizeSeperator.cy),
 							0, 0, (Gdiplus::REAL)m_sizeSeperator.cx, (Gdiplus::REAL)m_sizeSeperator.cy, UnitPixel);
 				}else
 				if(m_clrSeperator.GetValue() != Color(0, 0, 0, 0).GetValue())
 				{
-					// Î´Ö¸¶¨Í¼Æ¬,²¢ÇÒ·Ö¸ôÏßÏÔÉ«²»ÊÇÈ«0,Ôò»­¾ØĞÎ
+					// æœªæŒ‡å®šå›¾ç‰‡,å¹¶ä¸”åˆ†éš”çº¿æ˜¾è‰²ä¸æ˜¯å…¨0,åˆ™ç”»çŸ©å½¢
 					graphics.FillRectangle(&solidBrushS, 0, m_nHeaderHeight + (nVI+1)*m_nRowHeight-1, nContentWidth-2, 1);
 				}
 			}
-			// »­ÄÚÈİ²¿·ÖµÄÁĞ·Ö¸ôÏß
+			// ç”»å†…å®¹éƒ¨åˆ†çš„åˆ—åˆ†éš”çº¿
 			if(m_bShowColumnSeperator && (m_pImageColumnSeperator != NULL))
 			{
 				int nPosItemX = 0;
-				//ÏÈ»­×î×ó²à·Ö¸îÏß
+				//å…ˆç”»æœ€å·¦ä¾§åˆ†å‰²çº¿
 				RectF rectSepLeft((Gdiplus::REAL)(m_nVirtualLeft), (Gdiplus::REAL)m_nHeaderHeight,
 					(Gdiplus::REAL)m_sizeColumnSeperator.cx, (Gdiplus::REAL)(nHeightView - m_nHeaderHeight));
 				graphics.DrawImage(m_pImageColumnSeperator, rectSepLeft, 0, 0, (Gdiplus::REAL)m_sizeColumnSeperator.cx, (Gdiplus::REAL)m_sizeColumnSeperator.cy, UnitPixel);
-				// »­ÖĞ¼ä·Ö¸îÏß
+				// ç”»ä¸­é—´åˆ†å‰²çº¿
 				for(size_t j = 0; j < m_vecColumnInfo.size() -1; j++)
 				{
 					GridColumnInfo &columnInfo = m_vecColumnInfo.at(j);
@@ -2555,13 +2558,13 @@ void CDuiGridCtrl::DrawControl(CDC &dc, CRect rcUpdate)
 
 					nPosItemX += nWidth;
 				}
-				//»­×îÓÒ²à²à·Ö¸îÏß
+				//ç”»æœ€å³ä¾§ä¾§åˆ†å‰²çº¿
 				RectF rectSepRight((Gdiplus::REAL)(m_nVirtualLeft + nViewWidth -1), (Gdiplus::REAL)m_nHeaderHeight,
 					(Gdiplus::REAL)m_sizeColumnSeperator.cx, (Gdiplus::REAL)(nHeightView - m_nHeaderHeight));
 				graphics.DrawImage(m_pImageColumnSeperator, rectSepRight, 0, 0, (Gdiplus::REAL)m_sizeColumnSeperator.cx, (Gdiplus::REAL)m_sizeColumnSeperator.cy, UnitPixel);
 			}
 
-			// °Ñ²»ÔÚÏÔÊ¾·¶Î§ÄÚµÄµ¥Ôª¸ñµÄ¿Ø¼ş¶¼ÉèÖÃÎª²»¿É¼û
+			// æŠŠä¸åœ¨æ˜¾ç¤ºèŒƒå›´å†…çš„å•å…ƒæ ¼çš„æ§ä»¶éƒ½è®¾ç½®ä¸ºä¸å¯è§
 			for(int i = 0; i < (int)m_vecRowInfo.size(); i++)
 			{
 				if((i < m_nFirstViewRow) || (i > m_nLastViewRow))
@@ -2584,13 +2587,13 @@ void CDuiGridCtrl::DrawControl(CDC &dc, CRect rcUpdate)
 		}
 	}
 
-	// Êä³öµ½½çÃæDC,Ê¹ÓÃÓëµÄ·½Ê½ºÏ²¢±³¾°
-	// ±êÌâĞĞÊä³ö
+	// è¾“å‡ºåˆ°ç•Œé¢DC,ä½¿ç”¨ä¸çš„æ–¹å¼åˆå¹¶èƒŒæ™¯
+	// æ ‡é¢˜è¡Œè¾“å‡º
 	if(m_nHeaderHeight > 0)
 	{
 		dc.BitBlt(m_rc.left,m_rc.top, nViewWidth, m_nHeaderHeight, &m_memDC, m_nVirtualLeft, 0, SRCCOPY);//SRCAND);
 	}
-	// ÄÚÈİ²¿·ÖÊä³ö
+	// å†…å®¹éƒ¨åˆ†è¾“å‡º
 	int nContentHeight = m_rc.Height() - m_nHeaderHeight;
 	if(nTotalColumnWidth > m_rc.Width())
 	{
